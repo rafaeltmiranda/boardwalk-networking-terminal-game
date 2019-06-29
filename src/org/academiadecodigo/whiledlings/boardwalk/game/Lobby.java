@@ -127,6 +127,7 @@ public class Lobby implements Runnable{
         try {
 
             writer = new PrintWriter(player.socket.getOutputStream());
+            writer.println(OutputBuilder.logo());
             writer.println("What is you pirate name?");
             writer.flush();
             player.setAlias(player.inputStream.readLine());
