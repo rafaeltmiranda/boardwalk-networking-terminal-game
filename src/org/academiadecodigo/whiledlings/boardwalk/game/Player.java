@@ -13,7 +13,7 @@ public class Player implements Runnable{
     private int points;
     private Prompt prompt;
     boolean inRoom;
-    private BufferedReader inputStream = null;
+    BufferedReader inputStream = null;
     private Room room;
 
     public Player(Socket socket){
@@ -65,11 +65,12 @@ public class Player implements Runnable{
         this.room = room;
     }
 
+
     private void listen() {
 
         String message = null;
 
-        while (true) {
+        while (!room.isClosed()) {
 
             try {
                 message = inputStream.readLine();

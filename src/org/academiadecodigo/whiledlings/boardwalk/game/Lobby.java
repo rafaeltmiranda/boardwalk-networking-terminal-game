@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class Lobby implements Runnable{
 
@@ -101,16 +102,38 @@ public class Lobby implements Runnable{
         rooms.add(room);
         room.addOwnerPlayer(player);
 
-        Thread thread = new Thread(player);            // TODO: 29/06/2019 check this
-        thread.start();
+        Thread playerThread = new Thread(player);            // TODO: 29/06/2019 check this
+        playerThread.start();
+
+        Thread roomThread = new Thread(room);
+        roomThread.start();
+
+
 
     }
 
     @Override
     public void run() {
 
+        chooseAlias();
         menu();
 
+    }
+
+    private void chooseAlias() {
+
+        PrintWriter writer = null;
+
+        try {
+
+            writer = new PrintWriter(player.socket.getOutputStream());
+            writer.println("What is you pirate name?");
+            writer.flush();
+            player.setAlias(player.inputStream.readLine());
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void menu() {
