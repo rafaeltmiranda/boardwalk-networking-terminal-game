@@ -15,14 +15,17 @@ public class Lobby implements Runnable{
 
     private static ArrayList<Room> rooms = new ArrayList<>();
     private Player player;
-    private boolean differentName;
 
     public Lobby (Socket playerSocket) {
         this.player = new Player(playerSocket);
     }
 
     private void joinRoom(Room room){
+
         room.joinRoom(player);
+        Thread thread = new Thread(player);
+        thread.start();
+
     }
 
     private void roomListMenu() {
@@ -41,22 +44,21 @@ public class Lobby implements Runnable{
         Room selectedRoom = null;
 
         for (Room room : rooms) {
-            if (room.getName() == options[answerIndex - 1]) {
+            if (room.getName().equals(options[answerIndex - 1])) {
                 selectedRoom = room;
             }
         }
-
         joinRoom(selectedRoom);
     }
 
-    
+
     private String[] getRoomsAsString(){
 
         String optionsString = "";
 
         for (Room room : rooms) {
             if (!room.isClosed()) {
-                optionsString += room.getName() + " ";
+                optionsString += room.getName() + "|";
             }
         }
         optionsString += "I don't want any of those";
@@ -69,19 +71,39 @@ public class Lobby implements Runnable{
 
     private void createRoom(){
         StringInputScanner roomNameQuestion = new StringInputScanner();
-        roomNameQuestion.setMessage("What do you want to name your room, old salt?");
+        roomNameQuestion.setMessage("What do you want to name your room, old salt?\n");
+
+        boolean differentName = false;
+        String roomName = null;
+        PrintWriter writer = null;
+
+        try {
+             writer = new PrintWriter(player.socket.getOutputStream());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         while (!differentName) {
-            String roomName = player.getPrompt().getUserInput(roomNameQuestion);
+            roomName = player.getPrompt().getUserInput(roomNameQuestion);
 
 
-            if (!validName(roomName)) {
+            if (validName(roomName)) {
+                differentName = true;
                 continue;
             }
 
-            rooms.add(new Room(roomName, player));
-            differentName = true;
+            writer.println("Room name already in use\n");
+            writer.flush();
+
         }
+
+        Room room = new Room(roomName);
+        rooms.add(room);
+        room.addOwnerPlayer(player);
+
+        Thread thread = new Thread(player);            // TODO: 29/06/2019 check this
+        thread.start();
+
     }
 
     @Override
@@ -121,8 +143,10 @@ public class Lobby implements Runnable{
     }
 
     private boolean validName (String roomName) {
-        for (int i = 0; i < rooms.size() ; i++) {
-            if (roomName.equals(rooms.get(i).getName())) {
+
+        for (Room room : rooms) {
+
+            if (room.getName().equals(roomName)) {
                 return false;
             }
         }

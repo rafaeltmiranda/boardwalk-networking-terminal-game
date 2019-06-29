@@ -1,19 +1,20 @@
 package org.academiadecodigo.whiledlings.boardwalk.game;
 
 import org.academiadecodigo.bootcamp.Prompt;
+import org.academiadecodigo.whiledlings.boardwalk.utility.Closer;
 
-import java.io.IOException;
-import java.io.PrintStream;
+import java.io.*;
 import java.net.Socket;
 
-public class Player {
+public class Player implements Runnable{
 
     Socket socket;
     String alias;
     private int points;
     private Prompt prompt;
     boolean inRoom;
-
+    private BufferedReader inputStream = null;
+    private Room room;
 
     public Player(Socket socket){
 
@@ -22,6 +23,7 @@ public class Player {
         points = 100;
 
         try {
+            inputStream = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             prompt = new Prompt(socket.getInputStream(), new PrintStream(socket.getOutputStream()));
         } catch (IOException e) {
             e.printStackTrace();
@@ -50,5 +52,37 @@ public class Player {
     void setAlias(String alias){
 
         this.alias = alias;
+    }
+
+    @Override
+    public void run() {
+
+        listen();
+    }
+
+    void setRoom(Room room){
+
+        this.room = room;
+    }
+
+    private void listen() {
+
+        String message = null;
+
+        while (true) {
+
+            try {
+                message = inputStream.readLine();
+
+                if (message == null){        // TODO: 29/06/2019 check if this is right 
+                    Closer.close(socket);
+                }
+
+                room.broadcast(message, this);
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
