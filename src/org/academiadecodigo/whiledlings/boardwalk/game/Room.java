@@ -7,7 +7,7 @@ import org.academiadecodigo.whiledlings.boardwalk.phrases.Phrases;
 import java.util.ArrayList;
 import java.util.Set;
 
-public class Room {
+public class Room implements Runnable{
 
     public static int MAX_PLAYERS = 5;
 
@@ -19,10 +19,8 @@ public class Room {
     private Player roomOwner;
     private boolean closed;
 
-    public Room (String name, Player player){
+    public Room (String name){
         this.name = name;
-        this.roomOwner = player;
-        players.add(player);
     }
 
     public void joinRoom(Player player){
@@ -66,6 +64,11 @@ public class Room {
             }
         }
 
+        start();
+
+    }
+
+    private void start() {
     }
 
     private String getPlayerList() {
@@ -89,5 +92,17 @@ public class Room {
 
     public boolean isClosed() {
         return closed;
+    }
+
+    @Override
+    public void run() {
+
+    }
+
+    public void addOwnerPlayer(Player player){
+
+        roomOwner = player;
+        players.add(player);
+
     }
 }
