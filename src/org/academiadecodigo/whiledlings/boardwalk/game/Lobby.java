@@ -1,4 +1,4 @@
-package org.academiadecodigo.whiledlings.boardwalk;
+package org.academiadecodigo.whiledlings.boardwalk.game;
 
 import org.academiadecodigo.whiledlings.boardwalk.game.Room;
 
