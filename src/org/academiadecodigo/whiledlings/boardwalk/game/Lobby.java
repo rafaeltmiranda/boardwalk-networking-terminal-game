@@ -74,7 +74,6 @@ public class Lobby implements Runnable{
         String roomName = null;
 
         while (!differentName) {
-            System.out.println("in while");
             roomName = player.getPrompt().getUserInput(roomNameQuestion);
 
 
@@ -85,7 +84,6 @@ public class Lobby implements Runnable{
 
         }
 
-        System.out.println("out of while");
         rooms.add(new Room(roomName, player));
         System.out.println("Number of rooms: " + rooms.size());
         System.out.println(rooms.get(0).getName());
@@ -129,16 +127,12 @@ public class Lobby implements Runnable{
 
     private boolean validName (String roomName) {
 
-        System.out.println("in valid name");
-
         for (Room room : rooms) {
 
             if (room.getName().equals(roomName)) {
-                System.out.println("name was not valid");
                 return false;
             }
         }
-        System.out.println("name was valid");
         return true;
     }
 
