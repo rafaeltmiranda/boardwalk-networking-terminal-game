@@ -26,9 +26,9 @@ public class Lobby implements Runnable{
 
         String roomName = player.getPrompt().getUserInput(roomNameQuestion);
 
-        Room roomCreated = new Room(roomName, player);
+       // Room roomCreated = new Room(roomName, player);
 
-        rooms.add(roomCreated);
+        //rooms.add(roomCreated);
     }
 
     @Override
