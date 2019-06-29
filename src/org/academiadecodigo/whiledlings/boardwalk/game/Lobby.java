@@ -3,7 +3,10 @@ package org.academiadecodigo.whiledlings.boardwalk.game;
 import org.academiadecodigo.bootcamp.scanners.menu.MenuInputScanner;
 import org.academiadecodigo.bootcamp.scanners.string.StringInputScanner;
 import org.academiadecodigo.whiledlings.boardwalk.game.Room;
+import org.academiadecodigo.whiledlings.boardwalk.utility.OutputBuilder;
 
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
 
@@ -11,6 +14,7 @@ public class Lobby implements Runnable{
 
     private static ArrayList<Room> rooms = new ArrayList<>();
     private Player player;
+    private boolean differentName;
 
     public Lobby (Socket playerSocket) {
         this.player = new Player(playerSocket);
@@ -28,18 +32,17 @@ public class Lobby implements Runnable{
             if (!room.isClosed()) {
                 optionsString += room.getName() + " ";
             }
-            String options[] = optionsString.split(" ");
         }
-        optionsString += "I don't want any of then";
+        optionsString += "I don't want any of those";
 
-        String options[] = optionsString.split(" ");
+        String options[] = optionsString.split("|");
 
         MenuInputScanner menuRoomList = new MenuInputScanner(options);
-        menuRoomList.setMessage("Chose a pirate room who suits you...");
+        menuRoomList.setMessage("Choose a pirate room that suits you...");
 
         int answerIndex = player.getPrompt().getUserInput(menuRoomList);
 
-        if (answerIndex == options.length - 1) {
+        if (answerIndex == options.length) {
             return;
         }
 
@@ -59,11 +62,17 @@ public class Lobby implements Runnable{
         StringInputScanner roomNameQuestion = new StringInputScanner();
         roomNameQuestion.setMessage("What do you want to name your room, old salt?");
 
-        String roomName = player.getPrompt().getUserInput(roomNameQuestion);
+        while (!differentName) {
+            String roomName = player.getPrompt().getUserInput(roomNameQuestion);
 
-        Room roomCreated = new Room(roomName, player);
 
-        rooms.add(roomCreated);
+            if (!validName(roomName)) {
+                continue;
+            }
+
+            rooms.add(new Room(roomName, player));
+            differentName = true;
+        }
     }
 
     @Override
@@ -74,19 +83,40 @@ public class Lobby implements Runnable{
     }
 
     private void menu() {
-        String [] options = {"Join a room." , "Create a room."};
+        String[] options = {"Join a room.", "Create a room."};
         MenuInputScanner menuScanner = new MenuInputScanner(options);
         menuScanner.setMessage("Ahoy! Do you want to join a room or create a new room?");
 
-        int answerIndex = player.getPrompt().getUserInput(menuScanner);
+        while (true) {
 
-        if (answerIndex == 1) {
-            joinRoom();
-        }
+            try {
+                PrintWriter printWriter = new PrintWriter(player.socket.getOutputStream());
+                printWriter.print(OutputBuilder.logo());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
-        if (answerIndex == 2) {
-            createRoom();
+            int answerIndex = player.getPrompt().getUserInput(menuScanner);
+
+            if (answerIndex == 1) {
+                roomList();
+                continue;
+            }
+
+            if (answerIndex == 2) {
+                createRoom();
+            }
+
         }
+    }
+
+    private boolean validName (String roomName) {
+        for (int i = 0; i < rooms.size() ; i++) {
+            if (roomName.equals(rooms.get(i).getName())) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public static void removeRoom (Room room) {
