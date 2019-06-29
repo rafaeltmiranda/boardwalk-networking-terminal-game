@@ -3,6 +3,7 @@ package org.academiadecodigo.whiledlings.boardwalk.game;
 import org.academiadecodigo.bootcamp.scanners.menu.MenuInputScanner;
 import org.academiadecodigo.bootcamp.scanners.string.StringInputScanner;
 import org.academiadecodigo.whiledlings.boardwalk.phrases.Phrases;
+import org.academiadecodigo.whiledlings.boardwalk.utility.OutputBuilder;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -16,7 +17,7 @@ public class Room implements Runnable{
 
     private ArrayList<Player> players;
     private char[] completePhrase;
-    private char[] phrase;
+    private char[] playablePhrase;
     private Set<Character> alreadyChosen;
     private String name;
     private Player roomOwner;
@@ -89,7 +90,13 @@ public class Room implements Runnable{
     }
 
     private void getRandomPhrase(){
-        completePhrase = Phrases.ENCAPSULATION.getPhraseAsCharArray();
+
+        completePhrase = Phrases.values()[(int) (Math.random() * Phrases.values().length)].getPhraseAsCharArray();
+        playablePhrase = new char[completePhrase.length];
+
+        for (int i = 0; i < completePhrase.length ; i++) {
+            playablePhrase[i] = completePhrase[i] == ' ' ? ' ' : '_';
+        }
     }
 
     public String getName() {
@@ -123,6 +130,21 @@ public class Room implements Runnable{
             if (players.get(i).equals(player)){
                 continue;
             }
+
+            try {
+                PrintWriter writer = new PrintWriter(players.get(i).socket.getOutputStream());
+                writer.println(message);
+                writer.flush();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }
+    }
+
+    public void broadcast(String message) {
+
+        for (int i = 0; i < players.size(); i++){
 
             try {
                 PrintWriter writer = new PrintWriter(players.get(i).socket.getOutputStream());
