@@ -99,6 +99,7 @@ public class Lobby implements Runnable{
 
         Room room = new Room(roomName);
         rooms.add(room);
+        rooms.add(room);
         room.addOwnerPlayer(player);
 
         Thread thread = new Thread(player);            // TODO: 29/06/2019 check this
