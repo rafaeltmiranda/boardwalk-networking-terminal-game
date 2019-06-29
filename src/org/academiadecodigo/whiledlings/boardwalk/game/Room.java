@@ -1,5 +1,6 @@
 package org.academiadecodigo.whiledlings.boardwalk.game;
 
+import org.academiadecodigo.bootcamp.scanners.menu.MenuInputScanner;
 import org.academiadecodigo.bootcamp.scanners.string.StringInputScanner;
 import org.academiadecodigo.whiledlings.boardwalk.phrases.Phrases;
 
@@ -28,7 +29,7 @@ public class Room {
 
         if (closed){
             StringInputScanner notify = new StringInputScanner();
-            notify.setMessage("Sorry, the room " + name + " is closed :(\n\rEnter any key to back for menu:");
+            notify.setMessage("Sorry, the room " + name + " is closed :(\nEnter any key to back for menu:");
             player.getPrompt().getUserInput(notify);
             return;
         }
@@ -44,11 +45,38 @@ public class Room {
 
         while (!closed){
 
-            StringInputScanner notify = new StringInputScanner();
-            notify.setMessage("Waiting for more players, enter any key to refresh");
-            player.getPrompt().getUserInput(notify);
+            if (!player.equals(roomOwner)) {
+
+                StringInputScanner notify = new StringInputScanner();
+
+                notify.setMessage("Waiting for more players ...\n"
+                        + "Players in room:" + getPlayerList());
+                player.getPrompt().getUserInput(notify);
+                continue;
+            }
+
+            String[] options = {"Start", "Back to menu"};
+            MenuInputScanner start = new MenuInputScanner(options);
+
+            start.setMessage("Players in room:" + getPlayerList()
+                    + "Start game?");
+
+            if (player.getPrompt().getUserInput(start) == 1){
+                closed = true;
+            }
         }
 
+    }
+
+    private String getPlayerList() {
+
+        String names = "";
+
+        for (Player player : players){
+            names = names + player.alias + "\n";
+        }
+
+        return names;
     }
 
     private void getRandomPhrase(){
