@@ -8,18 +8,57 @@ import java.util.ArrayList;
 
 public class Lobby implements Runnable{
 
-    private static ArrayList<Room> rooms;
+    private static ArrayList<Room> rooms = new ArrayList<>();
     private Player player;
 
     public Lobby (Socket playerSocket) {
         this.player = new Player(playerSocket);
     }
 
+    public void joinRoom(Room room){
+        room.joinRoom(player);
+    }
 
-    public void joinRoom(){}
+
+    public void createRoom(){
+
+    }
+
+    public void roomList(){
+
+        String optionsString = "";
+
+        for (Room room : rooms) {
+            if(!room.isClosed()) {
+                optionsString += room.getName() + " ";
+            }
+            String options[] = optionsString.split(" ");
+        }
+        optionsString += "I don't want any of then";
+
+        String options[] = optionsString.split(" ");
+
+        MenuInputScanner menuRoomList = new MenuInputScanner(options);
+        menuRoomList.setMessage("Chose a pirate room who suits you...");
+
+        int answerIndex = player.getPrompt().getUserInput(menuRoomList);
+
+        if (answerIndex == options.length-1) {
+            return;
+        }
+
+        Room selectedRoom = null;
+
+        for (Room room : rooms) {
+            if (room.getName() == options[answerIndex-1]) {
+                selectedRoom = room;
+            }
+        }
+
+        joinRoom(selectedRoom);
 
 
-    public void createRoom(){}
+    }
 
     @Override
     public void run() {
