@@ -1,5 +1,6 @@
 package org.academiadecodigo.whiledlings.boardwalk.game;
 
+import org.academiadecodigo.bootcamp.scanners.string.StringInputScanner;
 import org.academiadecodigo.whiledlings.boardwalk.phrases.Phrases;
 
 import java.util.ArrayList;
@@ -26,6 +27,9 @@ public class Room {
     public void joinRoom(Player player){
 
         if (closed){
+            StringInputScanner notify = new StringInputScanner();
+            notify.setMessage("Sorry, the room " + name + " is closed :(\n\rEnter any key to back for menu:");
+            player.getPrompt().getUserInput(notify);
             return;
         }
 
@@ -36,11 +40,26 @@ public class Room {
         }
     }
 
+    private void waitStart(Player player){
+
+        while (!closed){
+
+            StringInputScanner notify = new StringInputScanner();
+            notify.setMessage("Waiting for more players, enter any key to refresh");
+            player.getPrompt().getUserInput(notify);
+        }
+
+    }
+
     private void getRandomPhrase(){
         completePhrase = Phrases.ENCAPSULATION.getPhraseAsCharArray();
     }
 
     public String getName() {
         return name;
+    }
+
+    public boolean isClosed() {
+        return closed;
     }
 }
