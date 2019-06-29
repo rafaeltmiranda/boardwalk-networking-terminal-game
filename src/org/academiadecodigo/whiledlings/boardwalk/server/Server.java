@@ -1,7 +1,6 @@
 package org.academiadecodigo.whiledlings.boardwalk.server;
 
 import org.academiadecodigo.whiledlings.boardwalk.game.Lobby;
-import org.academiadecodigo.whiledlings.boardwalk.game.Player;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -11,7 +10,7 @@ import java.util.concurrent.Executors;
 
 public class Server {
 
-    private int port = 2929;
+    private final int port = 2929;
     private ServerSocket serverSocket;
     private ExecutorService threadPool = Executors.newFixedThreadPool(100);
 
