@@ -3,6 +3,7 @@ package org.academiadecodigo.whiledlings.boardwalk.game;
 import org.academiadecodigo.bootcamp.scanners.menu.MenuInputScanner;
 import org.academiadecodigo.bootcamp.scanners.string.StringInputScanner;
 import org.academiadecodigo.whiledlings.boardwalk.game.Room;
+import org.academiadecodigo.whiledlings.boardwalk.utility.Closer;
 import org.academiadecodigo.whiledlings.boardwalk.utility.OutputBuilder;
 
 import java.io.IOException;
@@ -92,6 +93,7 @@ public class Lobby implements Runnable{
             try {
                 PrintWriter printWriter = new PrintWriter(player.socket.getOutputStream());
                 printWriter.print(OutputBuilder.logo());
+                Closer.close(printWriter);
             } catch (IOException e) {
                 e.printStackTrace();
             }
