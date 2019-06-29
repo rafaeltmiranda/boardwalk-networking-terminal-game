@@ -14,9 +14,6 @@ public enum Phrases {
 
     public char[] getPhraseAsCharArray(){
 
-        char[] phraseArray = new char[this.phrase.length()];
-        phraseArray = this.phrase.toCharArray();
-
-        return phraseArray;
+        return phrase.toCharArray();
     }
 }
