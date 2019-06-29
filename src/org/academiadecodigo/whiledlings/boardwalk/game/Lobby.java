@@ -21,22 +21,13 @@ public class Lobby implements Runnable{
         this.player = new Player(playerSocket);
     }
 
-    public void joinRoom(Room room){
+    private void joinRoom(Room room){
         room.joinRoom(player);
     }
 
-    public void roomList() {
+    private void roomListMenu() {
 
-        String optionsString = "";
-
-        for (Room room : rooms) {
-            if (!room.isClosed()) {
-                optionsString += room.getName() + " ";
-            }
-        }
-        optionsString += "I don't want any of those";
-
-        String options[] = optionsString.split("|");
+        String[] options = getRoomsAsString();
 
         MenuInputScanner menuRoomList = new MenuInputScanner(options);
         menuRoomList.setMessage("Choose a pirate room that suits you...");
@@ -58,8 +49,25 @@ public class Lobby implements Runnable{
         joinRoom(selectedRoom);
     }
 
+    
+    private String[] getRoomsAsString(){
 
-    public void createRoom(){
+        String optionsString = "";
+
+        for (Room room : rooms) {
+            if (!room.isClosed()) {
+                optionsString += room.getName() + " ";
+            }
+        }
+        optionsString += "I don't want any of those";
+
+        String options[] = optionsString.split("\\|");
+
+        return options;
+    }
+
+
+    private void createRoom(){
         StringInputScanner roomNameQuestion = new StringInputScanner();
         roomNameQuestion.setMessage("What do you want to name your room, old salt?");
 
@@ -87,13 +95,14 @@ public class Lobby implements Runnable{
         String[] options = {"Join a room.", "Create a room."};
         MenuInputScanner menuScanner = new MenuInputScanner(options);
         menuScanner.setMessage("Ahoy! Do you want to join a room or create a new room?");
+        PrintWriter printWriter = null;
 
-        while (true) {
+        while (!player.inRoom) {
 
             try {
-                PrintWriter printWriter = new PrintWriter(player.socket.getOutputStream());
+                printWriter = new PrintWriter(player.socket.getOutputStream());
                 printWriter.print(OutputBuilder.logo());
-                Closer.close(printWriter);
+                printWriter.flush();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -101,14 +110,13 @@ public class Lobby implements Runnable{
             int answerIndex = player.getPrompt().getUserInput(menuScanner);
 
             if (answerIndex == 1) {
-                roomList();
+                roomListMenu();
                 continue;
             }
 
             if (answerIndex == 2) {
                 createRoom();
             }
-
         }
     }
 
