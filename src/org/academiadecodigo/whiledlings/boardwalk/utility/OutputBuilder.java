@@ -23,7 +23,6 @@ public class OutputBuilder {
         for (int i = 0; i < (phrase.length * 2) + 5; i++) {
             output += "-";
         }
-git
         return output;
     }
 
