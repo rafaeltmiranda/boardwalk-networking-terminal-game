@@ -84,9 +84,9 @@ public class Lobby implements Runnable{
 
         }
 
-        rooms.add(new Room(roomName, player));
-        System.out.println("Number of rooms: " + rooms.size());
-        System.out.println(rooms.get(0).getName());
+        Room room = new Room(roomName);
+        rooms.add(room);
+        room.addOwnerPlayer(player);
     }
 
     @Override
