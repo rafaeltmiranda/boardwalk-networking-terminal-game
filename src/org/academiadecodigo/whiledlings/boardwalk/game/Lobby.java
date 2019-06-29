@@ -1,6 +1,7 @@
 package org.academiadecodigo.whiledlings.boardwalk.game;
 
 import org.academiadecodigo.bootcamp.scanners.menu.MenuInputScanner;
+import org.academiadecodigo.bootcamp.scanners.string.StringInputScanner;
 import org.academiadecodigo.whiledlings.boardwalk.game.Room;
 
 import java.net.Socket;
@@ -19,17 +20,12 @@ public class Lobby implements Runnable{
         room.joinRoom(player);
     }
 
-
-    public void createRoom(){
-
-    }
-
-    public void roomList(){
+    public void roomList() {
 
         String optionsString = "";
 
         for (Room room : rooms) {
-            if(!room.isClosed()) {
+            if (!room.isClosed()) {
                 optionsString += room.getName() + " ";
             }
             String options[] = optionsString.split(" ");
@@ -43,21 +39,31 @@ public class Lobby implements Runnable{
 
         int answerIndex = player.getPrompt().getUserInput(menuRoomList);
 
-        if (answerIndex == options.length-1) {
+        if (answerIndex == options.length - 1) {
             return;
         }
 
         Room selectedRoom = null;
 
         for (Room room : rooms) {
-            if (room.getName() == options[answerIndex-1]) {
+            if (room.getName() == options[answerIndex - 1]) {
                 selectedRoom = room;
             }
         }
 
         joinRoom(selectedRoom);
+    }
 
 
+    public void createRoom(){
+        StringInputScanner roomNameQuestion = new StringInputScanner();
+        roomNameQuestion.setMessage("What do you want to name your room, old salt?");
+
+        String roomName = player.getPrompt().getUserInput(roomNameQuestion);
+
+        Room roomCreated = new Room(roomName, player);
+
+        rooms.add(roomCreated);
     }
 
     @Override
@@ -70,7 +76,7 @@ public class Lobby implements Runnable{
     private void menu() {
         String [] options = {"Join a room." , "Create a room."};
         MenuInputScanner menuScanner = new MenuInputScanner(options);
-        menuScanner.setMessage("Do you want to join a room or create a new room?");
+        menuScanner.setMessage("Ahoy! Do you want to join a room or create a new room?");
 
         int answerIndex = player.getPrompt().getUserInput(menuScanner);
 
@@ -81,5 +87,9 @@ public class Lobby implements Runnable{
         if (answerIndex == 2) {
             createRoom();
         }
+    }
+
+    public static void removeRoom (Room room) {
+        rooms.remove(room);
     }
 }
