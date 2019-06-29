@@ -76,6 +76,8 @@ public class Player implements Runnable{
 
                 if (message == null){        // TODO: 29/06/2019 check if this is right 
                     Closer.close(socket);
+                    room.removePlayer(this);
+                    return;
                 }
 
                 room.broadcast(message, this);
