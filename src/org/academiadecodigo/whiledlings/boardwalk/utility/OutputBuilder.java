@@ -29,7 +29,7 @@ public class OutputBuilder {
 
     public static String logo(){
 
-        return " _ \n" +
+        return clearScreen() + " _ \n" +
                 "  \\_/ \n" +
                 "   |._ \n" +
                 "   |’.”-._.-“”—.-“-.__.-‘/ \n" +
