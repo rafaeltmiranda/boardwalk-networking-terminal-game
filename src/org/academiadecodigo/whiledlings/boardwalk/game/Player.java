@@ -8,7 +8,7 @@ import java.net.Socket;
 
 public class Player {
 
-    private Socket socket;
+    Socket socket;
     private String alias;
     private int points;
     private Prompt prompt;

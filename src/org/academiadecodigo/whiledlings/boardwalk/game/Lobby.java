@@ -3,7 +3,10 @@ package org.academiadecodigo.whiledlings.boardwalk.game;
 import org.academiadecodigo.bootcamp.scanners.menu.MenuInputScanner;
 import org.academiadecodigo.bootcamp.scanners.string.StringInputScanner;
 import org.academiadecodigo.whiledlings.boardwalk.game.Room;
+import org.academiadecodigo.whiledlings.boardwalk.utility.OutputBuilder;
 
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
 
@@ -29,18 +32,17 @@ public class Lobby implements Runnable{
             if (!room.isClosed()) {
                 optionsString += room.getName() + " ";
             }
-            String options[] = optionsString.split(" ");
         }
-        optionsString += "I don't want any of then";
+        optionsString += "I don't want any of those";
 
-        String options[] = optionsString.split(" ");
+        String options[] = optionsString.split("|");
 
         MenuInputScanner menuRoomList = new MenuInputScanner(options);
-        menuRoomList.setMessage("Chose a pirate room who suits you...");
+        menuRoomList.setMessage("Choose a pirate room that suits you...");
 
         int answerIndex = player.getPrompt().getUserInput(menuRoomList);
 
-        if (answerIndex == options.length - 1) {
+        if (answerIndex == options.length) {
             return;
         }
 
@@ -86,6 +88,14 @@ public class Lobby implements Runnable{
         menuScanner.setMessage("Ahoy! Do you want to join a room or create a new room?");
 
         while (true) {
+
+            try {
+                PrintWriter printWriter = new PrintWriter(player.socket.getOutputStream());
+                printWriter.print(OutputBuilder.logo());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
             int answerIndex = player.getPrompt().getUserInput(menuScanner);
 
             if (answerIndex == 1) {
