@@ -73,7 +73,7 @@ public class Player implements Runnable{
             try {
                 message = inputStream.readLine();
 
-                room.broadcast(message);
+                room.broadcast(message, this);
 
             } catch (IOException e) {
                 e.printStackTrace();
