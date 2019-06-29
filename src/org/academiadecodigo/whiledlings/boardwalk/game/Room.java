@@ -21,6 +21,7 @@ public class Room implements Runnable{
 
     public Room (String name){
         this.name = name;
+        players = new ArrayList<>();
     }
 
     public void joinRoom(Player player){
@@ -33,6 +34,7 @@ public class Room implements Runnable{
         }
 
         players.add(player);
+        player.inRoom = true;
 
         if (players.size() == MAX_PLAYERS){
             closed = true;
@@ -103,6 +105,7 @@ public class Room implements Runnable{
 
         roomOwner = player;
         players.add(player);
+        player.inRoom = true;
 
     }
 }
