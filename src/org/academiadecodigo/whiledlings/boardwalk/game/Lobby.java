@@ -15,7 +15,6 @@ public class Lobby implements Runnable{
 
     private static ArrayList<Room> rooms = new ArrayList<>();
     private Player player;
-    private boolean differentName;
 
     public Lobby (Socket playerSocket) {
         this.player = new Player(playerSocket);
@@ -49,7 +48,7 @@ public class Lobby implements Runnable{
         joinRoom(selectedRoom);
     }
 
-    
+
     private String[] getRoomsAsString(){
 
         String optionsString = "";
@@ -71,17 +70,25 @@ public class Lobby implements Runnable{
         StringInputScanner roomNameQuestion = new StringInputScanner();
         roomNameQuestion.setMessage("What do you want to name your room, old salt?");
 
+        boolean differentName = false;
+        String roomName = null;
+
         while (!differentName) {
-            String roomName = player.getPrompt().getUserInput(roomNameQuestion);
+            System.out.println("in while");
+            roomName = player.getPrompt().getUserInput(roomNameQuestion);
 
 
-            if (!validName(roomName)) {
-                continue;
+            if (validName(roomName)) {
+                differentName = true;
             }
 
-            rooms.add(new Room(roomName, player));
-            differentName = true;
+
         }
+
+        System.out.println("out of while");
+        rooms.add(new Room(roomName, player));
+        System.out.println("Number of rooms: " + rooms.size());
+        System.out.println(rooms.get(0).getName());
     }
 
     @Override
@@ -121,11 +128,17 @@ public class Lobby implements Runnable{
     }
 
     private boolean validName (String roomName) {
-        for (int i = 0; i < rooms.size() ; i++) {
-            if (roomName.equals(rooms.get(i).getName())) {
+
+        System.out.println("in valid name");
+
+        for (Room room : rooms) {
+
+            if (room.getName().equals(roomName)) {
+                System.out.println("name was not valid");
                 return false;
             }
         }
+        System.out.println("name was valid");
         return true;
     }
 
