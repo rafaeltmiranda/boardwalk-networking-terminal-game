@@ -12,10 +12,12 @@ public class Player {
     private String alias;
     private int points;
     private Prompt prompt;
+    boolean inRoom;
 
 
     public Player(Socket socket){
 
+        inRoom = false;
         this.socket = socket;
         points = 100;
 

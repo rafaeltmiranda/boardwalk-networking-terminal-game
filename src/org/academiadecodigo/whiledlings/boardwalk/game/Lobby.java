@@ -89,7 +89,7 @@ public class Lobby implements Runnable{
         menuScanner.setMessage("Ahoy! Do you want to join a room or create a new room?");
         PrintWriter printWriter = null;
 
-        while (true) {
+        while (!player.inRoom) {
 
             try {
                 printWriter = new PrintWriter(player.socket.getOutputStream());
