@@ -23,6 +23,7 @@ public class Lobby implements Runnable{
 
     private void joinRoom(Room room){
 
+        OutputBuilder.drawLogo(player.socket);
         room.joinRoom(player);
         Thread thread = new Thread(player);
         thread.start();
@@ -30,6 +31,8 @@ public class Lobby implements Runnable{
     }
 
     private void roomListMenu() {
+
+        OutputBuilder.drawLogo(player.socket);
 
         String[] options = getRoomsAsString();
 
@@ -71,8 +74,11 @@ public class Lobby implements Runnable{
 
 
     private void createRoom(){
+
+        OutputBuilder.drawLogo(player.socket);
+
         StringInputScanner roomNameQuestion = new StringInputScanner();
-        roomNameQuestion.setMessage("What do you want to name your room, old salt?\n");
+        roomNameQuestion.setMessage("\nWhat do you want to name your room, old salt?\n");
 
         boolean differentName = false;
         String roomName = null;
@@ -97,6 +103,8 @@ public class Lobby implements Runnable{
             writer.flush();
 
         }
+
+        OutputBuilder.drawLogo(player.socket);
 
         Room room = new Room(roomName);
         rooms.add(room);
@@ -145,13 +153,7 @@ public class Lobby implements Runnable{
 
         while (!player.inRoom) {
 
-            try {
-                printWriter = new PrintWriter(player.socket.getOutputStream());
-                printWriter.print(OutputBuilder.logo());
-                printWriter.flush();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            OutputBuilder.drawLogo(player.socket);
 
             int answerIndex = player.getPrompt().getUserInput(menuScanner);
 

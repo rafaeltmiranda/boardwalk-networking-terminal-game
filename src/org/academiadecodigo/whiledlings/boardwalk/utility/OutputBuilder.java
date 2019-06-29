@@ -1,5 +1,11 @@
 package org.academiadecodigo.whiledlings.boardwalk.utility;
 
+import org.academiadecodigo.whiledlings.boardwalk.game.Player;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.net.Socket;
+
 public class OutputBuilder {
 
 
@@ -46,7 +52,21 @@ public class OutputBuilder {
                 "   |  [... [.   [..        [..   [..   [..   [. [..      [..    [..[..  [..   [..   [..   [..   [..      [. [. \n" +
                 "   |  [.     [..[..        [..  [...... [..  [..  [..    [..    [..[.. [. [.. [..  [...... [..  [..      [..  [.. \n" +
                 "   |  [.      [.  [..     [..  [..       [.. [..    [..  [..   [.. [. [.    [.... [..       [.. [..      [..   [.. \n" +
-                "   |  [.... [..     [....     [..         [..[..      [..[.....    [..        [..[..         [..[........[..     [.. \n";
+                "   |  [.... [..     [....     [..         [..[..      [..[.....    [..        [..[..         [..[........[..     [.. \n\n";
+    }
+
+    public static void drawLogo(Socket playerSocket) {
+
+        PrintWriter printWriter;
+
+        try {
+            printWriter = new PrintWriter(playerSocket.getOutputStream());
+            printWriter.print(OutputBuilder.logo());
+            printWriter.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     public static String clearScreen(){
