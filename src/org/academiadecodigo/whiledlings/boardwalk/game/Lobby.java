@@ -68,10 +68,17 @@ public class Lobby implements Runnable{
 
     private void createRoom(){
         StringInputScanner roomNameQuestion = new StringInputScanner();
-        roomNameQuestion.setMessage("What do you want to name your room, old salt?");
+        roomNameQuestion.setMessage("What do you want to name your room, old salt?\n");
 
         boolean differentName = false;
         String roomName = null;
+        PrintWriter writer = null;
+
+        try {
+             writer = new PrintWriter(player.socket.getOutputStream());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         while (!differentName) {
             roomName = player.getPrompt().getUserInput(roomNameQuestion);
@@ -79,8 +86,11 @@ public class Lobby implements Runnable{
 
             if (validName(roomName)) {
                 differentName = true;
+                continue;
             }
 
+            writer.println("Room name already in use\n");
+            writer.flush();
 
         }
 
