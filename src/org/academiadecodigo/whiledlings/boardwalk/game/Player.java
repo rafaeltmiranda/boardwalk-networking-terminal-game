@@ -26,6 +26,10 @@ public class Player {
         }
     }
 
+    Prompt getPrompt () {
+        return prompt;
+    }
+
 
     void addPoints(int points){
 
