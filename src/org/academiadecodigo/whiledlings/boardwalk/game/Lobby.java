@@ -36,7 +36,7 @@ public class Lobby implements Runnable{
         }
         optionsString += "I don't want any of those";
 
-        String options[] = optionsString.split("|");
+        String options[] = optionsString.split("\\|");
 
         MenuInputScanner menuRoomList = new MenuInputScanner(options);
         menuRoomList.setMessage("Choose a pirate room that suits you...");
@@ -87,13 +87,14 @@ public class Lobby implements Runnable{
         String[] options = {"Join a room.", "Create a room."};
         MenuInputScanner menuScanner = new MenuInputScanner(options);
         menuScanner.setMessage("Ahoy! Do you want to join a room or create a new room?");
+        PrintWriter printWriter = null;
 
         while (true) {
 
             try {
-                PrintWriter printWriter = new PrintWriter(player.socket.getOutputStream());
+                printWriter = new PrintWriter(player.socket.getOutputStream());
                 printWriter.print(OutputBuilder.logo());
-                Closer.close(printWriter);
+                printWriter.flush();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -108,7 +109,6 @@ public class Lobby implements Runnable{
             if (answerIndex == 2) {
                 createRoom();
             }
-
         }
     }
 
