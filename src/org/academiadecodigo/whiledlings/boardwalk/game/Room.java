@@ -41,41 +41,16 @@ public class Room implements Runnable{
         player.inRoom = true;
         player.setRoom(this);
 
+        broadcast("Are you ready to walk the plank.", player);
+
         if (players.size() == MAX_PLAYERS){
             closed = true;
         }
 
     }
 
-    private void waitStart(){
-
-        while (!closed) {
-
-            for (int i = 0; i < players.size(); i++) {
-                if (!players.get(i).equals(roomOwner)) {
-
-                    StringInputScanner notify = new StringInputScanner();
-
-                    notify.setMessage("Waiting for more players ...\n"
-                            + "Players in room:" + getPlayerList());
-                    players.get(i).getPrompt().getUserInput(notify);
-                    continue;
-                }
-
-                String[] options = {"Start", "Back to menu"};
-                MenuInputScanner start = new MenuInputScanner(options);
-
-                start.setMessage("Players in room:" + getPlayerList()
-                        + "Start game?");
-
-                if (players.get(i).getPrompt().getUserInput(start) == 1) {
-                    closed = true;
-                }
-            }
-        }
-    }
-
     private void start() {
+        System.out.println("Start");
     }
 
     private String getPlayerList() {
@@ -110,8 +85,19 @@ public class Room implements Runnable{
     @Override
     public void run() {
 
-        waitStart();
+        synchronized (this) {
+            while (!closed) {
 
+                try {
+                    wait();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }
+
+        start();
     }
 
     public void addOwnerPlayer(Player player){
@@ -123,17 +109,19 @@ public class Room implements Runnable{
 
     }
 
-    public void broadcast(String message, Player player){
+    public void broadcast(String message, Player fromPlayer){
 
         for (int i = 0; i < players.size(); i++){
 
-            if (players.get(i).equals(player)){
+            if (players.get(i).equals(fromPlayer)){
                 continue;
             }
 
+            checkOwner(message, fromPlayer);
+
             try {
                 PrintWriter writer = new PrintWriter(players.get(i).socket.getOutputStream());
-                writer.println(message);
+                writer.println(fromPlayer.alias + " -> " + message);
                 writer.flush();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -158,8 +146,17 @@ public class Room implements Runnable{
     }
 
     void removePlayer(Player player){
-
         players.remove(player);
         player.inRoom = false;
+    }
+
+    private synchronized void checkOwner(String message, Player player){
+
+        if (player.equals(roomOwner)){
+            if (message.equals("start")){
+                closed = true;
+                notifyAll();
+            }
+        }
     }
 }
