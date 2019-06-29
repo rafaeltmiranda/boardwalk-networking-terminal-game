@@ -1,6 +1,7 @@
 package org.academiadecodigo.whiledlings.boardwalk.game;
 
 import org.academiadecodigo.bootcamp.Prompt;
+import org.academiadecodigo.whiledlings.boardwalk.utility.Closer;
 
 import java.io.*;
 import java.net.Socket;
@@ -72,6 +73,10 @@ public class Player implements Runnable{
 
             try {
                 message = inputStream.readLine();
+
+                if (message == null){        // TODO: 29/06/2019 check if this is right 
+                    Closer.close(socket);
+                }
 
                 room.broadcast(message, this);
 

@@ -21,11 +21,11 @@ public class Lobby implements Runnable{
     }
 
     private void joinRoom(Room room){
-        
-        Thread thread = new Thread(player);      // TODO: 29/06/2019 check this 
-        thread.start();
-        
+
         room.joinRoom(player);
+        Thread thread = new Thread(player);
+        thread.start();
+
     }
 
     private void roomListMenu() {
@@ -44,11 +44,10 @@ public class Lobby implements Runnable{
         Room selectedRoom = null;
 
         for (Room room : rooms) {
-            if (room.getName() == options[answerIndex - 1]) {
+            if (room.getName().equals(options[answerIndex - 1])) {
                 selectedRoom = room;
             }
         }
-
         joinRoom(selectedRoom);
     }
 
@@ -100,11 +99,11 @@ public class Lobby implements Runnable{
 
         Room room = new Room(roomName);
         rooms.add(room);
-
-        Thread thread = new Thread(player);            // TODO: 29/06/2019 check this 
-        thread.start();
-        
         room.addOwnerPlayer(player);
+
+        Thread thread = new Thread(player);            // TODO: 29/06/2019 check this
+        thread.start();
+
     }
 
     @Override
