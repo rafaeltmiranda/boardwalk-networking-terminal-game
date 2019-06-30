@@ -35,7 +35,7 @@ public class OutputBuilder {
 
     public static String logo(){
 
-        return clearScreen() + ColorTerminal.ANSI_GREE.getAnsi() + " _ \n" +
+        return clearScreen() + ColorTerminal.ANSI_GREEN.getAnsi() + " _ \n" +
                 "  \\_/ \n" +
                 "   |._ \n" +
                 "   |’.”-._.-“”—.-“-.__.-‘/ \n" +
