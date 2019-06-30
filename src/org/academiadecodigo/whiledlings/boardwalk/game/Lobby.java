@@ -135,7 +135,6 @@ public class Lobby implements Runnable{
             room.setPasswordProtectedTrue();
         }
 
-        System.out.println("Threads before new player thread: " + Thread.activeCount());
         player.listen();
 
         room.run();
