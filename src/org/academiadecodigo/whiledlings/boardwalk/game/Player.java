@@ -15,6 +15,7 @@ public class Player implements Runnable{
     boolean inRoom;
     BufferedReader inputStream = null;
     private Room room;
+    private static final int maximumLives = 5;
 
     public Player(Socket socket){
 
@@ -90,5 +91,9 @@ public class Player implements Runnable{
 
     public Socket getSocket() {
         return socket;
+    }
+
+    public int getMaximumLives() {
+        return maximumLives;
     }
 }

@@ -1,6 +1,7 @@
 package org.academiadecodigo.whiledlings.boardwalk.game;
 
 import org.academiadecodigo.bootcamp.scanners.menu.MenuInputScanner;
+import org.academiadecodigo.bootcamp.scanners.string.PasswordInputScanner;
 import org.academiadecodigo.bootcamp.scanners.string.StringInputScanner;
 import org.academiadecodigo.whiledlings.boardwalk.game.Room;
 import org.academiadecodigo.whiledlings.boardwalk.utility.Closer;
@@ -22,7 +23,7 @@ public class Lobby implements Runnable{
     }
 
     private void joinRoom(Room room){
-
+        System.out.println("entered join room");
         OutputBuilder.drawLogo(player.socket);
         room.joinRoom(player);
         Thread thread = new Thread(player);
@@ -44,6 +45,8 @@ public class Lobby implements Runnable{
         if (answerIndex == options.length) {
             return;
         }
+        options[answerIndex - 1] = options[answerIndex - 1].
+                substring(0, options[answerIndex - 1].indexOf('[') - 5);
 
         Room selectedRoom = null;
 
@@ -62,7 +65,9 @@ public class Lobby implements Runnable{
 
         for (Room room : rooms) {
             if (!room.isClosed()) {
-                optionsString += room.getName() + "|";
+                optionsString += room.getName() + "     " +
+                        (room.passwordProtected ? "[PASSWORD PROTECTED]" :
+                        "[OPEN]") + "|";
             }
         }
         optionsString += "I don't want any of those";
@@ -75,10 +80,13 @@ public class Lobby implements Runnable{
 
     private void createRoom(){
 
-        OutputBuilder.drawLogo(player.socket);
-
+        String password = null;
         StringInputScanner roomNameQuestion = new StringInputScanner();
         roomNameQuestion.setMessage("\nWhat do you want to name your room, old salt?\n");
+
+        password = passwordProtect();
+
+        OutputBuilder.drawLogo(player.socket);
 
         boolean differentName = false;
         String roomName = null;
@@ -110,15 +118,50 @@ public class Lobby implements Runnable{
         rooms.add(room);
         room.addOwnerPlayer(player);
 
+        if (password != null){
+            room.setPassword(password);
+            room.setPasswordProtectedTrue();
+        }
+
         Thread playerThread = new Thread(player);            // TODO: 29/06/2019 check this
         playerThread.start();
 
         Thread roomThread = new Thread(room);
         roomThread.start();
-
-
-
     }
+
+
+    private String passwordProtect(){
+        String[] passwordOptions = {"Yes", "No"};
+        int answer;
+        String password = "";
+        String paswordRepeat = " ";
+
+        MenuInputScanner passwordMenu = new MenuInputScanner(passwordOptions);
+        passwordMenu.setMessage("Do you want to password protect your room?");
+        PasswordInputScanner password1 = new PasswordInputScanner();
+        password1.setMessage("Enter password\n");
+        PasswordInputScanner password2 = new PasswordInputScanner();
+        password2.setMessage("Repeat password\n");
+
+        OutputBuilder.drawLogo(player.socket);
+
+        answer = player.getPrompt().getUserInput(passwordMenu);
+
+        if (answer == 1){
+
+            while (!(password.equals(paswordRepeat))){
+
+                password = player.getPrompt().getUserInput(password1);
+                paswordRepeat = player.getPrompt().getUserInput(password2);
+            }
+
+            return password;
+        }
+
+        return null;
+    }
+
 
     @Override
     public void run() {
@@ -145,7 +188,7 @@ public class Lobby implements Runnable{
             if (alias.length() > 26){
                 alias = alias.substring(0,25);
             }
-            
+
             player.setAlias(alias);
 
         } catch (IOException e) {

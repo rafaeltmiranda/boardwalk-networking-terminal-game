@@ -1,6 +1,7 @@
 package org.academiadecodigo.whiledlings.boardwalk.game;
 
 import org.academiadecodigo.bootcamp.scanners.menu.MenuInputScanner;
+import org.academiadecodigo.bootcamp.scanners.string.PasswordInputScanner;
 import org.academiadecodigo.bootcamp.scanners.string.StringInputScanner;
 import org.academiadecodigo.whiledlings.boardwalk.phrases.Phrases;
 import org.academiadecodigo.whiledlings.boardwalk.utility.OutputBuilder;
@@ -32,11 +33,23 @@ public class Room implements Runnable{
 
     public void joinRoom(Player player){
 
+        StringInputScanner notify = new StringInputScanner();
+        notify.setMessage("Sorry, the room " + name + " is closed :(\nEnter any key to back for menu:");
+
         if (closed){
-            StringInputScanner notify = new StringInputScanner();
-            notify.setMessage("Sorry, the room " + name + " is closed :(\nEnter any key to back for menu:");
             player.getPrompt().getUserInput(notify);
             return;
+        }
+
+        System.out.println("password protected: " + passwordProtected);
+        if (passwordProtected){
+            System.out.println("is password protected");
+            if (!checkPassword()){
+                notify.setMessage("Wrong password, you fresh water sailor\n" +
+                        "Enter any key to go back");
+                player.getPrompt().getUserInput(notify);
+                return;
+            }
         }
 
         players.add(player);
@@ -49,6 +62,19 @@ public class Room implements Runnable{
             closed = true;
         }
 
+    }
+
+    private boolean checkPassword(){
+        PasswordInputScanner passwordInputScanner = new PasswordInputScanner();
+        passwordInputScanner.setMessage("Enter password");
+        String password = null;
+
+        System.out.println("entered check password");
+        if (password.equals(this.password)){
+            return true;
+        }
+
+        return false;
     }
 
     private void start() {

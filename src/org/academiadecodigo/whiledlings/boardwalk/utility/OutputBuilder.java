@@ -56,9 +56,10 @@ public class OutputBuilder {
                 "   |  [.... [..     [....     [..         [..[..      [..[.....    [..        [..[..         [..[........[..     [.. \n\n";
     }
 
-    public static void ship(List players) {
+    public static void ship(List<Player> players) {
 
-        String[] ship = {"             ;~             ",
+        String[] ship = {"                            ",
+                         "             ;~             ",
                          "           ./|\\.            ",
                          "         ./ /| `\\.          ",
                          "        /  | |   `\\.        ",
@@ -73,19 +74,65 @@ public class OutputBuilder {
 
         String blankLine = "                             ";
 
-        String[] finalString = {"","","","","","","","","","","",""};
+        String[] finalArray = {"","","","","","","","","","","","","",""};
 
-        for (int i=0; i<finalString.length; i++) {
+        for (int i=0; i<finalArray.length; i++) {           // run all lines of final string array
 
-            if (i==9) {
-                finalString[i] += sea[0];
-                continue;
+            for (Player player : players) {                 // run all player to merge to final string array
+
+                if (i == 10) {                              // 1st line of sea
+                    finalArray[i] += sea[0];
+                    continue;
+                }
+                if (i == 11) {                              // 2nd line of sea
+                    finalArray[i] += sea[1];
+                    continue;
+                }
+
+                if (i == 12) {
+                    finalArray[i] += blankLine;             // Blank line before name
+                    continue;
+                }
+
+                if (i == 13) {                              // Line of the player's alias
+
+                    int numOfSpaces = blankLine.length() - player.getAlias().length();
+                    finalArray[i] += " " + player.getAlias();
+                    for (int j=0; j<numOfSpaces + 1; j++) {
+                        finalArray[i] += " ";
+                    }
+                    continue;
+                }
+
+                int lives = player.getLives();
+                int missingLives = player.getMaximumLives()-lives;
+
+                if (i < missingLives * 2) {                 // Blank lines of missing lives
+                    finalArray[i] += blankLine;
+                    continue;
+                }
+
+                finalArray[i] += ship[i-missingLives];      // Write remaining ship lines
+
             }
-            if (i == 10) {
-                finalString[i] += sea[1];
-                continue;
-            }
 
+        }
+
+        String finalString = "";
+        for (int i = 0; i < finalArray.length; i++) {
+            finalString += finalArray[i] + "\n";
+        }
+
+        PrintWriter printWriter;
+
+        for (Player player : players) {
+            try {
+                printWriter = new PrintWriter(player.getSocket().getOutputStream());
+                printWriter.print(finalString);
+                printWriter.flush();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
     }
