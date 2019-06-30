@@ -26,6 +26,7 @@ class Room{
     boolean passwordProtected;
     private String password;
     private boolean endGame;
+    private int playersInGame;
 
     Room(String name) {
         this.name = name;
@@ -55,6 +56,7 @@ class Room{
         players.add(player);
         player.inRoom = true;
         player.setRoom(this);
+        playersInGame++;
 
         broadcast(player.getAlias() + " is ready to walk the plank\n");
         broadcast(getPlayerList());
@@ -89,6 +91,18 @@ class Room{
 
         while (!endGame) {
             for (int i = 0; i < players.size(); i++) {
+
+                if (playersInGame == 0){
+                    onLoosers();
+                    return;
+                }
+
+                if (players.get(i).getLives() <= 0 ){
+                    playersInGame--;
+                    players.get(i).inRoom = false;
+                    continue;
+                }
+
                 refreshScreen(players.get(i));
                 response = getResponse(players.get(i), "Your choice: ");
                 verifyResponse(response, players.get(i));
