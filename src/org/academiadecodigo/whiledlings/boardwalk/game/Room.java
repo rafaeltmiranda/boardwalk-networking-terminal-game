@@ -1,17 +1,19 @@
 package org.academiadecodigo.whiledlings.boardwalk.game;
 
+import org.academiadecodigo.bootcamp.scanners.string.PasswordInputScanner;
 import org.academiadecodigo.bootcamp.scanners.string.StringInputScanner;
 import org.academiadecodigo.whiledlings.boardwalk.phrases.Phrases;
 import org.academiadecodigo.whiledlings.boardwalk.utility.OutputBuilder;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Set;
 
-public class Room implements Runnable {
+public class Room implements Runnable{
 
-    public static int MAX_PLAYERS = 5;
+    private static final int MAX_PLAYERS = 5;
 
     private ArrayList<Player> players;
     private char[] completePhrase;
@@ -21,7 +23,7 @@ public class Room implements Runnable {
     private Player roomOwner;
     private boolean closed;
     boolean passwordProtected;
-    String password;
+    private String password;
     private boolean endGame;
 
     public Room(String name) {
@@ -29,26 +31,49 @@ public class Room implements Runnable {
         players = new ArrayList<>();
     }
 
-    public void joinRoom(Player player) {
+    void joinRoom(Player player){
 
-        if (closed) {
-            StringInputScanner notify = new StringInputScanner();
-            notify.setMessage("Sorry, the room " + name + " is closed :(\nEnter any key to back for menu:");
+        StringInputScanner notify = new StringInputScanner();
+        notify.setMessage("Sorry, the room " + name + " is closed :(\nEnter any key to back for menu:");
+
+        if (closed){
             player.getPrompt().getUserInput(notify);
             return;
+        }
+
+        if (passwordProtected){
+            if (!checkPassword(player)){
+                notify.setMessage("Wrong password, you fresh water sailor\n" +
+                        "Enter any key to go back\n");
+                player.getPrompt().getUserInput(notify);
+                return;
+            }
         }
 
         players.add(player);
         player.inRoom = true;
         player.setRoom(this);
 
-        // TODO: 30/06/2019 David -> Incluir frase indicando que entrou na sala
-        broadcast("Are you ready to walk the plank.", player);
+        broadcast(player.getAlias() + " is ready to walk the plank");
 
-        if (players.size() == MAX_PLAYERS) {
+        if (players.size() == MAX_PLAYERS){
             closed = true;
         }
 
+    }
+
+    private boolean checkPassword(Player player){
+        PasswordInputScanner passwordInputScanner = new PasswordInputScanner();
+        passwordInputScanner.setMessage("Enter password\n");
+        String password = null;
+
+        password = player.getPrompt().getUserInput(passwordInputScanner);
+
+        if (password.equals(this.password)){
+            return true;
+        }
+
+        return false;
     }
 
     private void start() {
@@ -110,14 +135,14 @@ public class Room implements Runnable {
 
         String names = "";
 
-        for (Player player : players) {
-            names = names + player.alias + "\n";
+        for (Player player : players){
+            names = names + player.getAlias() + "\n";
         }
 
         return names;
     }
 
-    private void getRandomPhrase() {
+    private void getRandomPhrase(){
 
         completePhrase = Phrases.values()[(int) (Math.random() * Phrases.values().length)].getPhraseAsCharArray();
         playablePhrase = new char[completePhrase.length];
@@ -127,11 +152,11 @@ public class Room implements Runnable {
         }
     }
 
-    public String getName() {
+    String getName() {
         return name;
     }
 
-    public boolean isClosed() {
+    boolean isClosed() {
         return closed;
     }
 
@@ -153,7 +178,7 @@ public class Room implements Runnable {
         start();
     }
 
-    public void addOwnerPlayer(Player player) {
+    void addOwnerPlayer(Player player){
 
         roomOwner = player;
         players.add(player);
@@ -162,11 +187,11 @@ public class Room implements Runnable {
 
     }
 
-    public void broadcast(String message, Player fromPlayer) {
+    void broadcast(String message, Player fromPlayer){
 
-        for (int i = 0; i < players.size(); i++) {
+        for (int i = 0; i < players.size(); i++){
 
-            if (players.get(i).equals(fromPlayer)) {
+            if (players.get(i).equals(fromPlayer)){
                 continue;
             }
 
@@ -174,7 +199,8 @@ public class Room implements Runnable {
 
             try {
                 PrintWriter writer = new PrintWriter(players.get(i).socket.getOutputStream());
-                writer.println(fromPlayer.alias + " -> " + message);
+                writer.println(OutputBuilder.ANSI_GREEN + fromPlayer.getAlias() + " -> " +
+                        OutputBuilder.ANSI_RESET + message);
                 writer.flush();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -183,9 +209,9 @@ public class Room implements Runnable {
         }
     }
 
-    public void broadcast(String message) {
+    void broadcast(String message) {
 
-        for (int i = 0; i < players.size(); i++) {
+        for (int i = 0; i < players.size(); i++){
 
             try {
                 PrintWriter writer = new PrintWriter(players.get(i).socket.getOutputStream());
@@ -198,26 +224,38 @@ public class Room implements Runnable {
         }
     }
 
-    void removePlayer(Player player) {
+    void removePlayer(Player player){
         players.remove(player);
         player.inRoom = false;
     }
 
-    private synchronized void checkOwner(String message, Player player) {
+    private synchronized void checkOwner(String message, Player player){
 
-        if (player.equals(roomOwner)) {
-            if (message.equals("start")) {
+        if (player.equals(roomOwner)){
+            if (message.equals("start")){
                 closed = true;
                 notifyAll();
             }
         }
     }
 
-    void setPasswordProtectedTrue() {
+    void setPasswordProtectedTrue(){
         passwordProtected = true;
     }
 
-    public void setPassword(String password) {
+    void setPassword(String password) {
         this.password = password;
+    }
+
+    boolean checkIfPlayerInRoom(Player player){
+
+        if (players.contains(player)){
+            return true;
+        }
+        return false;
+    }
+
+    int getNumberOfPlayers(){
+        return players.size();
     }
 }

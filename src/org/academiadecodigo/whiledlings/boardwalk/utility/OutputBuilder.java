@@ -9,6 +9,25 @@ import java.util.List;
 
 public class OutputBuilder {
 
+    public static final String ANSI_RESET = "\u001B[0m";
+    public static final String ANSI_BLACK = "\u001B[30m";
+    public static final String ANSI_RED = "\u001B[31m";
+    public static final String ANSI_GREEN = "\u001B[32m";
+    public static final String ANSI_YELLOW = "\u001B[33m";
+    public static final String ANSI_BLUE = "\u001B[34m";
+    public static final String ANSI_PURPLE = "\u001B[35m";
+    public static final String ANSI_CYAN = "\u001B[36m";
+    public static final String ANSI_WHITE = "\u001B[37m";
+
+    public static final String ANSI_BLACK_BACKGROUND = "\u001B[40m";
+    public static final String ANSI_RED_BACKGROUND = "\u001B[41m";
+    public static final String ANSI_GREEN_BACKGROUND = "\u001B[42m";
+    public static final String ANSI_YELLOW_BACKGROUND = "\u001B[43m";
+    public static final String ANSI_BLUE_BACKGROUND = "\u001B[44m";
+    public static final String ANSI_PURPLE_BACKGROUND = "\u001B[45m";
+    public static final String ANSI_CYAN_BACKGROUND = "\u001B[46m";
+    public static final String ANSI_WHITE_BACKGROUND = "\u001B[47m";
+
 
     public static String buildOutput(char[] phrase){
 
@@ -56,9 +75,10 @@ public class OutputBuilder {
                 "   |  [.... [..     [....     [..         [..[..      [..[.....    [..        [..[..         [..[........[..     [.. \n\n";
     }
 
-    public static void ship(List players) {
+    public static void ship(List<Player> players) {
 
-        String[] ship = {"             ;~             ",
+        String[] ship = {"                            ",
+                         "             ;~             ",
                          "           ./|\\.            ",
                          "         ./ /| `\\.          ",
                          "        /  | |   `\\.        ",
@@ -73,19 +93,65 @@ public class OutputBuilder {
 
         String blankLine = "                             ";
 
-        String[] finalString = {"","","","","","","","","","","",""};
+        String[] finalArray = {"","","","","","","","","","","","","",""};
 
-        for (int i=0; i<finalString.length; i++) {
+        for (int i=0; i<finalArray.length; i++) {           // run all lines of final string array
 
-            if (i==9) {
-                finalString[i] += sea[0];
-                continue;
+            for (Player player : players) {                 // run all player to merge to final string array
+
+                if (i == 10) {                              // 1st line of sea
+                    finalArray[i] += sea[0];
+                    continue;
+                }
+                if (i == 11) {                              // 2nd line of sea
+                    finalArray[i] += sea[1];
+                    continue;
+                }
+
+                if (i == 12) {
+                    finalArray[i] += blankLine;             // Blank line before name
+                    continue;
+                }
+
+                if (i == 13) {                              // Line of the player's alias
+
+                    int numOfSpaces = blankLine.length() - player.getAlias().length();
+                    finalArray[i] += " " + player.getAlias();
+                    for (int j=0; j<numOfSpaces + 1; j++) {
+                        finalArray[i] += " ";
+                    }
+                    continue;
+                }
+
+                int lives = player.getLives();
+                int missingLives = player.getMaximumLives()-lives;
+
+                if (i < missingLives * 2) {                 // Blank lines of missing lives
+                    finalArray[i] += blankLine;
+                    continue;
+                }
+
+                finalArray[i] += ship[i-missingLives];      // Write remaining ship lines
+
             }
-            if (i == 10) {
-                finalString[i] += sea[1];
-                continue;
-            }
 
+        }
+
+        String finalString = "";
+        for (int i = 0; i < finalArray.length; i++) {
+            finalString += finalArray[i] + "\n";
+        }
+
+        PrintWriter printWriter;
+
+        for (Player player : players) {
+            try {
+                printWriter = new PrintWriter(player.getSocket().getOutputStream());
+                printWriter.print(finalString);
+                printWriter.flush();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
     }
@@ -100,6 +166,14 @@ public class OutputBuilder {
             printWriter.flush();
         } catch (IOException e) {
             e.printStackTrace();
+        }
+
+    }
+
+    public static void broadcastLogo(List<Player> players) {
+
+        for (Player player : players) {
+            drawLogo(player.getSocket());
         }
 
     }

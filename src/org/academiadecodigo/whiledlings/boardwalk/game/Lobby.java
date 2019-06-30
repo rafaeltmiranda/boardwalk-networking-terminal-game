@@ -23,12 +23,13 @@ public class Lobby implements Runnable{
     }
 
     private void joinRoom(Room room){
-
         OutputBuilder.drawLogo(player.socket);
         room.joinRoom(player);
-        Thread thread = new Thread(player);
-        thread.start();
 
+        if (room.checkIfPlayerInRoom(player)) {
+            Thread thread = new Thread(player);
+            thread.start();
+        }
     }
 
     private void roomListMenu() {
@@ -45,6 +46,8 @@ public class Lobby implements Runnable{
         if (answerIndex == options.length) {
             return;
         }
+        options[answerIndex - 1] = options[answerIndex - 1].
+                substring(0, options[answerIndex - 1].indexOf('[') - 5);
 
         Room selectedRoom = null;
 
@@ -64,8 +67,9 @@ public class Lobby implements Runnable{
         for (Room room : rooms) {
             if (!room.isClosed()) {
                 optionsString += room.getName() + "     " +
-                        (room.passwordProtected ? "PASSWORD PROTECTED" :
-                        "OPEN") + "|";
+                        (room.passwordProtected ? "[PASSWORD PROTECTED]" :
+                        "[OPEN]") + " - " + room.getNumberOfPlayers() +
+                        " players in room" + "|";
             }
         }
         optionsString += "I don't want any of those";
@@ -195,7 +199,7 @@ public class Lobby implements Runnable{
     }
 
     private void menu() {
-        String[] options = {"Join a room.", "Create a room."};
+        String[] options = {"Join a room.", "Create a room.", "Check instructions."};
         MenuInputScanner menuScanner = new MenuInputScanner(options);
         menuScanner.setMessage("Ahoy! Do you want to join a room or create a new room?");
         PrintWriter printWriter = null;
@@ -214,6 +218,10 @@ public class Lobby implements Runnable{
             if (answerIndex == 2) {
                 createRoom();
             }
+
+            if (answerIndex == 3) {
+                instructions();
+            }
         }
     }
 
@@ -231,4 +239,34 @@ public class Lobby implements Runnable{
     public static void removeRoom (Room room) {
         rooms.remove(room);
     }
+
+    private void instructions () {
+
+        String instructions = OutputBuilder.ANSI_BLUE +  OutputBuilder.ANSI_WHITE_BACKGROUND + "Ahoy, Matey!\n" +
+                "Welcome to the Board walk game! To be successful, follow the instructions below.\n" +
+                OutputBuilder.ANSI_GREEN + OutputBuilder.ANSI_BLACK_BACKGROUND +
+                "1. In turns, each Buccaneer will try to guess a letter or a whole expression.\n" +
+                "2. Guessing a letter:\n" + OutputBuilder.ANSI_CYAN +
+                "  -> Right: you have the chance to take another guess.\n" +
+                "  -> Wrong: you are one step closer to sinking the ship!\n" + OutputBuilder.ANSI_GREEN +
+                "3. Guessing the whole expression:\n" + OutputBuilder.ANSI_CYAN +
+                "  -> Right: you found the coffer. Enjoy your doubloons!\n" +
+                "  -> Wrong: you are two steps closer to sinking you ship. Watch out!\n" + OutputBuilder.ANSI_GREEN +
+                "4. The winner is the Bucko who guesses the last letter or the whole expression.\n" +
+                "Be wise or be reckless, just don't feed the fish!" + OutputBuilder.ANSI_RESET;
+
+        String [] menuInstructionsOptions = {"Go back."};
+        MenuInputScanner menuInstructions = new MenuInputScanner(menuInstructionsOptions);
+        menuInstructions.setMessage(instructions);
+
+
+        OutputBuilder.drawLogo(player.socket);
+        int answerIndex = player.getPrompt().getUserInput(menuInstructions);
+
+        if (answerIndex == 1) {
+            menu();
+        }
+    }
+
+
 }
