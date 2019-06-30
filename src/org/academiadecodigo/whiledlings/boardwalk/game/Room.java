@@ -125,6 +125,13 @@ class Room{
 
     private void printWinner(Player player) {
         broadcast(OutputBuilder.clearScreen() + OutputBuilder.winner(player));
+
+        StringInputScanner exitScanner = new StringInputScanner();
+        exitScanner.setMessage("\n Press any key to leave the game");
+
+        for (int i = 0; i < players.size(); i++) {
+            players.get(i).getPrompt().getUserInput(exitScanner);
+        }
     }
 
     private void verifyResponse(String response, Player player) {
@@ -265,6 +272,7 @@ class Room{
         player.inRoom = true;
         player.setRoom(this);
         player.resetLives();
+        player.inGame = true;
 
     }
 
