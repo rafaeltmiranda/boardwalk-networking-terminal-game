@@ -55,6 +55,23 @@ public class OutputBuilder {
                 "   |  [.... [..     [....     [..         [..[..      [..[.....    [..        [..[..         [..[........[..     [.. \n\n";
     }
 
+    public static void ship(int state) {
+
+        String[] ship = {"             ;~             ",
+                         "\0x1B[10;10           ./|\\.            ",
+                         "         ./ /| `\\.          ",
+                         "        /  | |   `\\.        ",
+                         "       |   | |     `\\.      ",
+                         "       |    \\|       `\\.    ",
+                         "     .  `----|__________\\.  ",
+                         "      \\-----''----.....___  ",
+                         "       \\               \"\"/  "};
+
+        String[] sea = { " ^~^~^~^~^`~^~^`^~^~^`^~^~^ ",
+                         "  ~^~^~`~~^~^`~^~^~`~~^~^~  "};
+
+    }
+
     public static void drawLogo(Socket playerSocket) {
 
         PrintWriter printWriter;
