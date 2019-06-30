@@ -16,7 +16,7 @@ public class Room implements Runnable{
 
     public static int MAX_PLAYERS = 5;
 
-    private ArrayList<Player> players;
+    ArrayList<Player> players;
     private char[] completePhrase;
     private char[] playablePhrase;
     private Set<Character> alreadyChosen;
@@ -41,12 +41,10 @@ public class Room implements Runnable{
             return;
         }
 
-        System.out.println("password protected: " + passwordProtected);
         if (passwordProtected){
-            System.out.println("is password protected");
-            if (!checkPassword()){
+            if (!checkPassword(player)){
                 notify.setMessage("Wrong password, you fresh water sailor\n" +
-                        "Enter any key to go back");
+                        "Enter any key to go back\n");
                 player.getPrompt().getUserInput(notify);
                 return;
             }
@@ -64,12 +62,13 @@ public class Room implements Runnable{
 
     }
 
-    private boolean checkPassword(){
+    private boolean checkPassword(Player player){
         PasswordInputScanner passwordInputScanner = new PasswordInputScanner();
-        passwordInputScanner.setMessage("Enter password");
+        passwordInputScanner.setMessage("Enter password\n");
         String password = null;
 
-        System.out.println("entered check password");
+        password = player.getPrompt().getUserInput(passwordInputScanner);
+
         if (password.equals(this.password)){
             return true;
         }
