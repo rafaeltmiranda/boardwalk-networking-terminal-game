@@ -3,6 +3,7 @@ package org.academiadecodigo.whiledlings.boardwalk.game;
 import org.academiadecodigo.bootcamp.scanners.string.PasswordInputScanner;
 import org.academiadecodigo.bootcamp.scanners.string.StringInputScanner;
 import org.academiadecodigo.whiledlings.boardwalk.phrases.Phrases;
+import org.academiadecodigo.whiledlings.boardwalk.utility.ColorTerminal;
 import org.academiadecodigo.whiledlings.boardwalk.utility.OutputBuilder;
 
 import java.io.IOException;
@@ -146,8 +147,8 @@ public class Room implements Runnable{
 
             try {
                 PrintWriter writer = new PrintWriter(players.get(i).socket.getOutputStream());
-                writer.println(OutputBuilder.ANSI_GREEN + fromPlayer.getAlias() + " -> " +
-                        OutputBuilder.ANSI_RESET + message);
+                writer.println(ColorTerminal.ANSI_GREE.getAnsi() + fromPlayer.getAlias() + " -> " +
+                        ColorTerminal.ANSI_RESET.getAnsi() + message);
                 writer.flush();
             } catch (IOException e) {
                 e.printStackTrace();

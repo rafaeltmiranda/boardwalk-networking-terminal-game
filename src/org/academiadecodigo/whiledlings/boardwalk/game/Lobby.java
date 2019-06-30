@@ -5,6 +5,7 @@ import org.academiadecodigo.bootcamp.scanners.string.PasswordInputScanner;
 import org.academiadecodigo.bootcamp.scanners.string.StringInputScanner;
 import org.academiadecodigo.whiledlings.boardwalk.game.Room;
 import org.academiadecodigo.whiledlings.boardwalk.utility.Closer;
+import org.academiadecodigo.whiledlings.boardwalk.utility.ColorTerminal;
 import org.academiadecodigo.whiledlings.boardwalk.utility.OutputBuilder;
 
 import java.io.IOException;
@@ -242,18 +243,18 @@ public class Lobby implements Runnable{
 
     private void instructions () {
 
-        String instructions = OutputBuilder.ANSI_BLUE +  OutputBuilder.ANSI_WHITE_BACKGROUND + "Ahoy, Matey!\n" +
+        String instructions = ColorTerminal.ANSI_BLUE.getAnsi() + ColorTerminal.ANSI_WHITE_BACKGROUND.getAnsi() + "Ahoy, Matey!\n" +
                 "Welcome to the Board walk game! To be successful, follow the instructions below.\n" +
-                OutputBuilder.ANSI_GREEN + OutputBuilder.ANSI_BLACK_BACKGROUND +
+                ColorTerminal.ANSI_GREE.getAnsi() + ColorTerminal.ANSI_BLACK_BACKGROUND.getAnsi() +
                 "1. In turns, each Buccaneer will try to guess a letter or a whole expression.\n" +
-                "2. Guessing a letter:\n" + OutputBuilder.ANSI_CYAN +
+                "2. Guessing a letter:\n" + ColorTerminal.ANSI_CYAN.getAnsi() +
                 "  -> Right: you have the chance to take another guess.\n" +
-                "  -> Wrong: you are one step closer to sinking the ship!\n" + OutputBuilder.ANSI_GREEN +
-                "3. Guessing the whole expression:\n" + OutputBuilder.ANSI_CYAN +
+                "  -> Wrong: you are one step closer to sinking the ship!\n" + ColorTerminal.ANSI_GREE.getAnsi() +
+                "3. Guessing the whole expression:\n" + ColorTerminal.ANSI_CYAN.getAnsi() +
                 "  -> Right: you found the coffer. Enjoy your doubloons!\n" +
-                "  -> Wrong: you are two steps closer to sinking you ship. Watch out!\n" + OutputBuilder.ANSI_GREEN +
+                "  -> Wrong: you are two steps closer to sinking you ship. Watch out!\n" + ColorTerminal.ANSI_GREE.getAnsi() +
                 "4. The winner is the Bucko who guesses the last letter or the whole expression.\n" +
-                "Be wise or be reckless, just don't feed the fish!" + OutputBuilder.ANSI_RESET;
+                "Be wise or be reckless, just don't feed the fish!" + ColorTerminal.ANSI_RESET;
 
         String [] menuInstructionsOptions = {"Go back."};
         MenuInputScanner menuInstructions = new MenuInputScanner(menuInstructionsOptions);
