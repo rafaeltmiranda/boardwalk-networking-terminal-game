@@ -13,6 +13,8 @@ import java.util.ArrayList;
 
 public class Lobby implements Runnable{
 
+    private static final int BLANK_SPACES_AFTER_ROOM_NAME = 5;
+
     private static ArrayList<Room> rooms = new ArrayList<>();
     private Player player;
 
@@ -45,7 +47,7 @@ public class Lobby implements Runnable{
             return;
         }
         options[answerIndex - 1] = options[answerIndex - 1].
-                substring(0, options[answerIndex - 1].indexOf('[') - 5);
+                substring(0, options[answerIndex - 1].indexOf('[') - BLANK_SPACES_AFTER_ROOM_NAME);
 
         Room selectedRoom = null;
 
@@ -64,7 +66,7 @@ public class Lobby implements Runnable{
 
         for (Room room : rooms) {
             if (!room.isClosed()) {
-                optionsString += room.getName() + "     " +
+                optionsString += room.getName() + addBlankSpaces() +
                         (room.passwordProtected ? "[PASSWORD PROTECTED]" :
                         "[OPEN]") + " - " + room.getNumberOfPlayers() +
                         " players in room" + "|";
@@ -75,6 +77,16 @@ public class Lobby implements Runnable{
         String options[] = optionsString.split("\\|");
 
         return options;
+    }
+
+
+    private String addBlankSpaces() {
+        String result = "";
+
+        for (int i = 0; i < BLANK_SPACES_AFTER_ROOM_NAME; i++) {
+            result += " ";
+        }
+        return result;
     }
 
 
