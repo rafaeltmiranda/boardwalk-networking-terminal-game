@@ -58,7 +58,7 @@ public class OutputBuilder {
 
     public static void ship(List<Player> players) {
 
-        String[] ship = {"                            ",
+        String[] ship = {ColorTerminal.ANSI_PURPLE.getAnsi() + "                            ",
                          "             ;~             ",
                          "           ./|\\.            ",
                          "         ./ /| `\\.          ",
@@ -67,10 +67,10 @@ public class OutputBuilder {
                          "       |    \\|       `\\.    ",
                          "     .  `----|__________\\.  ",
                          "      \\-----''----.....___  ",
-                         "       \\               \"\"/  "};
+                         "       \\               \"\"/  " + ColorTerminal.ANSI_RESET.getAnsi()};
 
-        String[] sea = { " ^~^~^~^~^`~^~^`^~^~^`^~^~^ ",
-                         "  ~^~^~`~~^~^`~^~^~`~~^~^~  "};
+        String[] sea = { ColorTerminal.ANSI_CYAN.getAnsi() + " ^~^~^~^~^`~^~^`^~^~^`^~^~^ ",
+                         "  ~^~^~`~~^~^`~^~^~`~~^~^~  " + ColorTerminal.ANSI_CYAN.getAnsi()};
 
         String blankLine = "                             ";
 
