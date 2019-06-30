@@ -197,7 +197,7 @@ public class Lobby implements Runnable{
     }
 
     private void menu() {
-        String[] options = {"Join a room.", "Create a room."};
+        String[] options = {"Join a room.", "Create a room.", "Check instructions."};
         MenuInputScanner menuScanner = new MenuInputScanner(options);
         menuScanner.setMessage("Ahoy! Do you want to join a room or create a new room?");
         PrintWriter printWriter = null;
@@ -216,6 +216,10 @@ public class Lobby implements Runnable{
             if (answerIndex == 2) {
                 createRoom();
             }
+
+            if (answerIndex == 3) {
+                instructions();
+            }
         }
     }
 
@@ -233,4 +237,33 @@ public class Lobby implements Runnable{
     public static void removeRoom (Room room) {
         rooms.remove(room);
     }
+
+    private void instructions () {
+
+        String instructions = "Ahoy, Matey!\n" +
+                "Welcome to the Board walk game! To be successful, follow the instructions bellow.\n" +
+                "1. In turns, each Buccaneer will try to guess a letter or a whole expression.\n" +
+                "2. Guessing a letter:\n" +
+                "  -> Right: you have the chance to take another guess.\n" +
+                "  -> Wrong: you are one step closer to sink the ship!\n" +
+                "3. Guessing the whole expression:\n" +
+                "  ->Right: you found the coffer. Enjoy your doubloons!\n" +
+                "  ->Wrong: you are two steps closer to sink you ship. Watch out!\n" +
+                "4. The winner is the Bucko who guesses the last letter or the whole expression.\n" +
+                "Be wise or be reckless, just don't feed the fish!";
+
+        String [] menuInstructionsOptions = {"Go back."};
+        MenuInputScanner menuInstructions = new MenuInputScanner(menuInstructionsOptions);
+        menuInstructions.setMessage(instructions);
+
+
+        OutputBuilder.drawLogo(player.socket);
+        int answerIndex = player.getPrompt().getUserInput(menuInstructions);
+
+        if (answerIndex == 1) {
+            menu();
+        }
+    }
+
+
 }
