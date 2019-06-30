@@ -23,12 +23,13 @@ public class Lobby implements Runnable{
     }
 
     private void joinRoom(Room room){
-        System.out.println("entered join room");
         OutputBuilder.drawLogo(player.socket);
         room.joinRoom(player);
-        Thread thread = new Thread(player);
-        thread.start();
 
+        if (room.players.contains(player)) {
+            Thread thread = new Thread(player);
+            thread.start();
+        }
     }
 
     private void roomListMenu() {
@@ -67,7 +68,8 @@ public class Lobby implements Runnable{
             if (!room.isClosed()) {
                 optionsString += room.getName() + "     " +
                         (room.passwordProtected ? "[PASSWORD PROTECTED]" :
-                        "[OPEN]") + "|";
+                        "[OPEN]") + " - " + room.players.size() +
+                        " players in room" + "|";
             }
         }
         optionsString += "I don't want any of those";
