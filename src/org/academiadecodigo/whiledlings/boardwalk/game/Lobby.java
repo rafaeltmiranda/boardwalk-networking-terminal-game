@@ -23,7 +23,7 @@ public class Lobby implements Runnable{
     }
 
     private void joinRoom(Room room){
-
+        System.out.println("entered join room");
         OutputBuilder.drawLogo(player.socket);
         room.joinRoom(player);
         Thread thread = new Thread(player);
@@ -45,6 +45,8 @@ public class Lobby implements Runnable{
         if (answerIndex == options.length) {
             return;
         }
+        options[answerIndex - 1] = options[answerIndex - 1].
+                substring(0, options[answerIndex - 1].indexOf('[') - 5);
 
         Room selectedRoom = null;
 
@@ -64,8 +66,8 @@ public class Lobby implements Runnable{
         for (Room room : rooms) {
             if (!room.isClosed()) {
                 optionsString += room.getName() + "     " +
-                        (room.passwordProtected ? "PASSWORD PROTECTED" :
-                        "OPEN") + "|";
+                        (room.passwordProtected ? "[PASSWORD PROTECTED]" :
+                        "[OPEN]") + "|";
             }
         }
         optionsString += "I don't want any of those";
