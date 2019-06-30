@@ -243,14 +243,14 @@ public class Lobby implements Runnable{
     private void instructions () {
 
         String instructions = "Ahoy, Matey!\n" +
-                "Welcome to the Board walk game! To be successful, follow the instructions bellow.\n" +
+                "Welcome to the Board walk game! To be successful, follow the instructions below.\n" +
                 "1. In turns, each Buccaneer will try to guess a letter or a whole expression.\n" +
                 "2. Guessing a letter:\n" +
                 "  -> Right: you have the chance to take another guess.\n" +
-                "  -> Wrong: you are one step closer to sink the ship!\n" +
+                "  -> Wrong: you are one step closer to sinking the ship!\n" +
                 "3. Guessing the whole expression:\n" +
                 "  ->Right: you found the coffer. Enjoy your doubloons!\n" +
-                "  ->Wrong: you are two steps closer to sink you ship. Watch out!\n" +
+                "  ->Wrong: you are two steps closer to sinking you ship. Watch out!\n" +
                 "4. The winner is the Bucko who guesses the last letter or the whole expression.\n" +
                 "Be wise or be reckless, just don't feed the fish!";
 
