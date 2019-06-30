@@ -11,9 +11,9 @@ public class OutputBuilder {
 
     public static String buildOutput(char[] phrase){
 
-        String output = "";
+        String output = " ";
 
-        for (int i = 0; i < (phrase.length * 2) + 5; i++) {
+        for (int i = 0; i < (phrase.length * 2) + 3; i++) {
             output += "-";
         }
 
@@ -24,9 +24,9 @@ public class OutputBuilder {
             output += c + " ";
         }
 
-        output += " |\n";
+        output += " |\n ";
 
-        for (int i = 0; i < (phrase.length * 2) + 5; i++) {
+        for (int i = 0; i < (phrase.length * 2) + 3; i++) {
             output += "-";
         }
         return output;
@@ -65,9 +65,9 @@ public class OutputBuilder {
                          "        /  | |   `\\.        ",
                          "       |   | |     `\\.      ",
                          "       |    \\|       `\\.    ",
-                         "     .  `----|__________\\.  ",
-                         "      \\-----''----.....___  ",
-                         "       \\               \"\"/  "};
+                         ColorTerminal.ANSI_PURPLE.getAnsi() + "     ." + ColorTerminal.ANSI_GREEN.getAnsi() + "  `----|__________\\.  ",
+                         ColorTerminal.ANSI_PURPLE.getAnsi() + "      \\-----''----.....___  " + ColorTerminal.ANSI_RESET.getAnsi(),
+                         ColorTerminal.ANSI_PURPLE.getAnsi() + "       \\               \"\"/  " + ColorTerminal.ANSI_RESET.getAnsi()};
 
         String[] sea = { ColorTerminal.ANSI_CYAN.getAnsi() + " ^~^~^~^~^`~^~^`^~^~^`^~^~^ ",
                          ColorTerminal.ANSI_CYAN.getAnsi() + "  ~^~^~`~~^~^`~^~^~`~~^~^~  " + ColorTerminal.ANSI_RESET.getAnsi()};
@@ -96,15 +96,15 @@ public class OutputBuilder {
 
                 if (i == 13) {                              // Line of the player's alias
 
-                    int numOfSpaces = blankLine.length() - player.getAlias().length();
-                    finalArray[i] += " " + player.getAlias();
+                    int numOfSpaces = blankLine.length()-4 - player.getAlias().length();
+                    finalArray[i] += "  " + player.getAlias();
                     for (int j=0; j<numOfSpaces + 1; j++) {
                         finalArray[i] += " ";
                     }
                     continue;
                 }
 
-                int lives = player.getLives();
+                int lives = -1;//player.getLives();
                 int missingLives = player.getMaximumLives()-lives;
 
                 if (i < missingLives * 2) {                 // Blank lines of missing lives
@@ -112,7 +112,16 @@ public class OutputBuilder {
                     continue;
                 }
 
-                finalArray[i] += ship[i-missingLives*2];      // Write remaining ship lines
+                ColorTerminal color = ColorTerminal.ANSI_GREEN;
+
+                if (lives == 3) {
+                    color = ColorTerminal.ANSI_YELLOW;
+                }
+
+                if (lives < 3) {
+                    color = ColorTerminal.ANSI_RED;
+                }
+                finalArray[i] += color.getAnsi() + ship[i-missingLives*2] + ColorTerminal.ANSI_RESET.getAnsi();      // Write remaining ship lines
 
             }
 
@@ -128,7 +137,7 @@ public class OutputBuilder {
         for (Player player : players) {
             try {
                 printWriter = new PrintWriter(player.getSocket().getOutputStream());
-                printWriter.print(finalString);
+                printWriter.print(finalString + "\n");
                 printWriter.flush();
             } catch (IOException e) {
                 e.printStackTrace();

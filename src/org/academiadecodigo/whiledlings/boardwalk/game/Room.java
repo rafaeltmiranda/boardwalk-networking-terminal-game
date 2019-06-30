@@ -135,7 +135,9 @@ public class Room implements Runnable {
             return;
         }
 
-        if (response.toCharArray().equals(completePhrase)) endGame = true;
+        if (response.toCharArray().equals(completePhrase)) {
+            endGame = true;
+        }
 
     }
 
