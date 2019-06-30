@@ -26,7 +26,7 @@ public class Lobby implements Runnable{
         OutputBuilder.drawLogo(player.socket);
         room.joinRoom(player);
 
-        if (room.players.contains(player)) {
+        if (room.checkIfPlayerInRoom(player)) {
             Thread thread = new Thread(player);
             thread.start();
         }
@@ -68,7 +68,7 @@ public class Lobby implements Runnable{
             if (!room.isClosed()) {
                 optionsString += room.getName() + "     " +
                         (room.passwordProtected ? "[PASSWORD PROTECTED]" :
-                        "[OPEN]") + " - " + room.players.size() +
+                        "[OPEN]") + " - " + room.getNumberOfPlayers() +
                         " players in room" + "|";
             }
         }

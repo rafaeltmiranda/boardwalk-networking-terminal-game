@@ -8,14 +8,15 @@ import java.net.Socket;
 
 public class Player implements Runnable{
 
+    private static final int MAXIMUM_LIVES = 5;
+
     Socket socket;
-    String alias;
+    private String alias;
     private int lives;
     private Prompt prompt;
     boolean inRoom;
     BufferedReader inputStream = null;
     private Room room;
-    private static final int maximumLives = 5;
 
     public Player(Socket socket){
 
@@ -94,6 +95,6 @@ public class Player implements Runnable{
     }
 
     public int getMaximumLives() {
-        return maximumLives;
+        return MAXIMUM_LIVES;
     }
 }

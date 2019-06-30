@@ -1,37 +1,34 @@
 package org.academiadecodigo.whiledlings.boardwalk.game;
 
-import org.academiadecodigo.bootcamp.scanners.menu.MenuInputScanner;
 import org.academiadecodigo.bootcamp.scanners.string.PasswordInputScanner;
 import org.academiadecodigo.bootcamp.scanners.string.StringInputScanner;
 import org.academiadecodigo.whiledlings.boardwalk.phrases.Phrases;
-import org.academiadecodigo.whiledlings.boardwalk.utility.OutputBuilder;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Set;
 
 public class Room implements Runnable{
 
-    public static int MAX_PLAYERS = 5;
+    private static final int MAX_PLAYERS = 5;
 
-    ArrayList<Player> players;
+    private ArrayList<Player> players;
     private char[] completePhrase;
     private char[] playablePhrase;
     private Set<Character> alreadyChosen;
     private String name;
     private Player roomOwner;
     private boolean closed;
-    boolean passwordProtected;
-    String password;
+    private boolean passwordProtected;
+    private String password;
 
     public Room (String name){
         this.name = name;
         players = new ArrayList<>();
     }
 
-    public void joinRoom(Player player){
+    void joinRoom(Player player){
 
         StringInputScanner notify = new StringInputScanner();
         notify.setMessage("Sorry, the room " + name + " is closed :(\nEnter any key to back for menu:");
@@ -85,7 +82,7 @@ public class Room implements Runnable{
         String names = "";
 
         for (Player player : players){
-            names = names + player.alias + "\n";
+            names = names + player.getAlias() + "\n";
         }
 
         return names;
@@ -101,11 +98,11 @@ public class Room implements Runnable{
         }
     }
 
-    public String getName() {
+    String getName() {
         return name;
     }
 
-    public boolean isClosed() {
+    boolean isClosed() {
         return closed;
     }
 
@@ -127,7 +124,7 @@ public class Room implements Runnable{
         start();
     }
 
-    public void addOwnerPlayer(Player player){
+    void addOwnerPlayer(Player player){
 
         roomOwner = player;
         players.add(player);
@@ -136,7 +133,7 @@ public class Room implements Runnable{
 
     }
 
-    public void broadcast(String message, Player fromPlayer){
+    void broadcast(String message, Player fromPlayer){
 
         for (int i = 0; i < players.size(); i++){
 
@@ -148,7 +145,7 @@ public class Room implements Runnable{
 
             try {
                 PrintWriter writer = new PrintWriter(players.get(i).socket.getOutputStream());
-                writer.println(fromPlayer.alias + " -> " + message);
+                writer.println(fromPlayer.getAlias() + " -> " + message);
                 writer.flush();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -157,7 +154,7 @@ public class Room implements Runnable{
         }
     }
 
-    public void broadcast(String message) {
+    void broadcast(String message) {
 
         for (int i = 0; i < players.size(); i++){
 
@@ -191,7 +188,19 @@ public class Room implements Runnable{
         passwordProtected = true;
     }
 
-    public void setPassword(String password) {
+    void setPassword(String password) {
         this.password = password;
+    }
+
+    boolean checkIfPlayerInRoom(Player player){
+
+        if (players.contains(player)){
+            return true;
+        }
+        return false;
+    }
+
+    int getNumberOfPlayers(){
+        return players.size();
     }
 }
