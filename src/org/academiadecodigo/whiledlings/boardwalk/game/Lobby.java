@@ -131,6 +131,7 @@ public class Lobby implements Runnable{
     private void chooseAlias() {
 
         PrintWriter writer = null;
+        String alias = null;
 
         try {
 
@@ -138,7 +139,14 @@ public class Lobby implements Runnable{
             writer.println(OutputBuilder.logo());
             writer.println("What is you pirate name?");
             writer.flush();
-            player.setAlias(player.inputStream.readLine());
+
+            alias = player.inputStream.readLine();
+
+            if (alias.length() > 26){
+                alias = alias.substring(0,25);
+            }
+            
+            player.setAlias(alias);
 
         } catch (IOException e) {
             e.printStackTrace();

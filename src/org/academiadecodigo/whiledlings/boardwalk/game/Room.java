@@ -22,6 +22,8 @@ public class Room implements Runnable{
     private String name;
     private Player roomOwner;
     private boolean closed;
+    boolean passwordProtected;
+    String password;
 
     public Room (String name){
         this.name = name;
@@ -158,5 +160,13 @@ public class Room implements Runnable{
                 notifyAll();
             }
         }
+    }
+
+    void setPasswordProtectedTrue(){
+        passwordProtected = true;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }
