@@ -151,6 +151,14 @@ public class OutputBuilder {
 
     }
 
+    public static void broadcastLogo(List<Player> players) {
+
+        for (Player player : players) {
+            drawLogo(player.getSocket());
+        }
+
+    }
+
     public static String clearScreen(){
 
         return "\033[H\033[2J";
