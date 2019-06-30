@@ -105,7 +105,7 @@ public class OutputBuilder {
                 }
 
                 int lives = player.getLives();
-                int missingLives = 1;//player.getMaximumLives()-lives;
+                int missingLives = player.getMaximumLives()-lives;
 
                 if (i < missingLives * 2) {                 // Blank lines of missing lives
                     finalArray[i] += blankLine;
