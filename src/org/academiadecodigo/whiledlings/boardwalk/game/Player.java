@@ -17,6 +17,7 @@ public class Player{
     boolean inRoom;
     BufferedReader inputStream = null;
     private Room room;
+    boolean inGame;
 
     Player(Socket socket){
 

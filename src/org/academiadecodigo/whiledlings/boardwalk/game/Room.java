@@ -5,6 +5,7 @@ import org.academiadecodigo.bootcamp.scanners.string.StringInputScanner;
 import org.academiadecodigo.whiledlings.boardwalk.phrases.Phrases;
 import org.academiadecodigo.whiledlings.boardwalk.utility.ColorTerminal;
 import org.academiadecodigo.whiledlings.boardwalk.utility.OutputBuilder;
+import org.omg.CORBA.TRANSACTION_MODE;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -26,7 +27,7 @@ class Room{
     boolean passwordProtected;
     private String password;
     private boolean endGame;
-    private int playersInGame;
+    private int playersInGame = 0;
 
     Room(String name) {
         this.name = name;
@@ -57,6 +58,7 @@ class Room{
         player.inRoom = true;
         player.setRoom(this);
         playersInGame++;
+        player.inGame = true;
 
         broadcast(player.getAlias() + " is ready to walk the plank\n");
         broadcast(getPlayerList());
@@ -90,25 +92,32 @@ class Room{
         getRandomPhrase();
 
         while (!endGame) {
-            for (int i = 0; i < players.size(); i++) {
+            for (Player player : players) {
 
-                if (playersInGame == 0){
+                System.out.println("players in game " + playersInGame);
+                if (playersInGame == 0) {
                     onLoosers();
                     return;
                 }
 
-                if (players.get(i).getLives() <= 0 ){
-                    playersInGame--;
-                    players.get(i).inRoom = false;
+                if (!player.inGame){
                     continue;
                 }
 
-                refreshScreen(players.get(i));
-                response = getResponse(players.get(i), "Your choice: ");
-                verifyResponse(response, players.get(i));
+                System.out.println(player.getLives());
+                if (player.getLives() <= 0) {
+                    playersInGame--;
+                    player.inGame = false;
+                    continue;
+                }
 
+                refreshScreen(player);
+                response = getResponse(player, "Your choice: ");
+                verifyResponse(response, player);
+
+                System.out.println(endGame);
                 if (endGame) {
-                    printWinner(players.get(i));
+                    printWinner(player);
                     break;
                 }
             }
@@ -256,14 +265,12 @@ class Room{
         players.add(player);
         player.inRoom = true;
         player.setRoom(this);
+        playersInGame++;
+        player.inGame = true;
 
     }
 
     void broadcast(String message, Player fromPlayer) {
-
-        if (closed){
-            return;
-        }
 
         for (int i = 0; i < players.size(); i++) {
 
