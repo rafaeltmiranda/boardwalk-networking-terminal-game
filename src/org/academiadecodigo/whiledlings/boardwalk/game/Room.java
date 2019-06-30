@@ -58,6 +58,7 @@ class Room{
         player.resetLives();
         player.setRoom(this);
         playersInGame++;
+        player.inGame = true;
 
         broadcast(player.getAlias() + " is ready to walk the plank\n");
         broadcast(getPlayerList());
@@ -98,8 +99,14 @@ class Room{
                     return;
                 }
 
+                if (!player.inGame){
+                    continue;
+                }
+
+                System.out.println(player.getLives());
                 if (player.getLives() <= 0) {
                     playersInGame--;
+                    player.inGame = false;
                     continue;
                 }
 
@@ -263,16 +270,16 @@ class Room{
 
     void broadcast(String message, Player fromPlayer) {
 
-        for (Player player : players) {
+        for (int i = 0; i < players.size(); i++) {
 
-            if (player.equals(fromPlayer)) {
+            if (players.get(i).equals(fromPlayer)) {
                 continue;
             }
 
             checkOwner(message, fromPlayer);
 
             try {
-                PrintWriter writer = new PrintWriter(player.socket.getOutputStream());
+                PrintWriter writer = new PrintWriter(players.get(i).socket.getOutputStream());
                 writer.println(ColorTerminal.ANSI_GREEN.getAnsi() + fromPlayer.getAlias() + " -> " +
                         ColorTerminal.ANSI_RESET.getAnsi() + message);
                 writer.flush();
@@ -285,10 +292,10 @@ class Room{
 
     void broadcast(String message) {
 
-        for (Player player : players) {
+        for (int i = 0; i < players.size(); i++) {
 
             try {
-                PrintWriter writer = new PrintWriter(player.socket.getOutputStream());
+                PrintWriter writer = new PrintWriter(players.get(i).socket.getOutputStream());
                 writer.println(message);
                 writer.flush();
             } catch (IOException e) {
@@ -339,8 +346,8 @@ class Room{
         StringInputScanner exitScanner = new StringInputScanner();
         exitScanner.setMessage("\n Press any key to leave the game");
 
-        for (Player player : players) {
-            player.getPrompt().getUserInput(exitScanner);
+        for (int i = 0; i < players.size(); i++) {
+            players.get(i).getPrompt().getUserInput(exitScanner);
         }
 
         sendPlayersToLobby();
