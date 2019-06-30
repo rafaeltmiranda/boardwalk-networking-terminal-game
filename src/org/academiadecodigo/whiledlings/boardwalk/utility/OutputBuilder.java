@@ -58,7 +58,7 @@ public class OutputBuilder {
 
     public static void ship(List<Player> players) {
 
-        String[] ship = {ColorTerminal.ANSI_PURPLE.getAnsi() + "                            ",
+        String[] ship = {"                            ",
                          "             ;~             ",
                          "           ./|\\.            ",
                          "         ./ /| `\\.          ",
@@ -67,7 +67,7 @@ public class OutputBuilder {
                          "       |    \\|       `\\.    ",
                          "     .  `----|__________\\.  ",
                          "      \\-----''----.....___  ",
-                         "       \\               \"\"/  " + ColorTerminal.ANSI_RESET.getAnsi()};
+                         "       \\               \"\"/  "};
 
         String[] sea = { ColorTerminal.ANSI_CYAN.getAnsi() + " ^~^~^~^~^`~^~^`^~^~^`^~^~^ ",
                          "  ~^~^~`~~^~^`~^~^~`~~^~^~  " + ColorTerminal.ANSI_CYAN.getAnsi()};
@@ -105,14 +105,14 @@ public class OutputBuilder {
                 }
 
                 int lives = player.getLives();
-                int missingLives = player.getMaximumLives()-lives;
+                int missingLives = 1;//player.getMaximumLives()-lives;
 
                 if (i < missingLives * 2) {                 // Blank lines of missing lives
                     finalArray[i] += blankLine;
                     continue;
                 }
 
-                finalArray[i] += ship[i-missingLives];      // Write remaining ship lines
+                finalArray[i] += ship[i-missingLives*2];      // Write remaining ship lines
 
             }
 
