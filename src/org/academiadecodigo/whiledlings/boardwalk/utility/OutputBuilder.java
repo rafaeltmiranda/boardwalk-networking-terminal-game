@@ -69,10 +69,10 @@ public class OutputBuilder {
                          ColorTerminal.ANSI_PURPLE.getAnsi() + "      \\-----''----.....___  " + ColorTerminal.ANSI_RESET.getAnsi(),
                          ColorTerminal.ANSI_PURPLE.getAnsi() + "       \\               \"\"/  " + ColorTerminal.ANSI_RESET.getAnsi()};
 
-        String[] sea = { ColorTerminal.ANSI_CYAN.getAnsi() + " ^~^~^~^~^`~^~^`^~^~^`^~^~^ ",
-                         ColorTerminal.ANSI_CYAN.getAnsi() + "  ~^~^~`~~^~^`~^~^~`~~^~^~  " + ColorTerminal.ANSI_RESET.getAnsi()};
+        String[] sea = { " ^~^~^~^~^`~^~^`^~^~^`^~^~^ ",
+                         "  ~^~^~`~~^~^`~^~^~`~~^~^~  "};
 
-        String blankLine = "                             ";
+        String blankLine = "                            ";
 
         String[] finalArray = {"","","","","","","","","","","","","",""};
 
@@ -80,12 +80,17 @@ public class OutputBuilder {
 
             for (Player player : players) {                 // run all player to merge to final string array
 
+                ColorTerminal seaColor = ColorTerminal.ANSI_CYAN;
+                if (player.getLives()<=0) {
+                    seaColor = ColorTerminal.ANSI_RED;
+                }
+
                 if (i == 10) {                              // 1st line of sea
-                    finalArray[i] += sea[0];
+                    finalArray[i] += seaColor.getAnsi() + sea[0] + ColorTerminal.ANSI_RESET.getAnsi();
                     continue;
                 }
                 if (i == 11) {                              // 2nd line of sea
-                    finalArray[i] += sea[1];
+                    finalArray[i] += seaColor.getAnsi() + sea[1] + ColorTerminal.ANSI_RESET.getAnsi();
                     continue;
                 }
 

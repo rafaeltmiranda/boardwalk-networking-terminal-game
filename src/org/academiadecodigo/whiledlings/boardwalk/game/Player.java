@@ -94,4 +94,8 @@ public class Player{
     public int getMaximumLives() {
         return MAXIMUM_LIVES;
     }
+
+    void resetLives(){
+        lives = MAXIMUM_LIVES;
+    }
 }
