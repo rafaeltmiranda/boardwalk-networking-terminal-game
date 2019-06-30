@@ -334,4 +334,16 @@ class Room{
     int getNumberOfPlayers() {
         return players.size();
     }
+
+    private void onLoosers () {
+        broadcast(OutputBuilder.logo() + OutputBuilder.buildOutput(completePhrase) + OutputBuilder.allLoosers());
+
+        StringInputScanner exitScanner = new StringInputScanner();
+        exitScanner.setMessage("\n Press any key to leave the game");
+
+        for (int i = 0; i < players.size(); i++) {
+            players.get(i).getPrompt().getUserInput(exitScanner);
+        }
+
+    }
 }
