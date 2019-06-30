@@ -63,7 +63,9 @@ public class Lobby implements Runnable{
 
         for (Room room : rooms) {
             if (!room.isClosed()) {
-                optionsString += room.getName() + "|";
+                optionsString += room.getName() + "     " +
+                        (room.passwordProtected ? "PASSWORD PROTECTED" :
+                        "OPEN") + "|";
             }
         }
         optionsString += "I don't want any of those";
