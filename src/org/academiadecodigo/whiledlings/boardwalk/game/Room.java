@@ -56,7 +56,8 @@ class Room{
         player.inRoom = true;
         player.setRoom(this);
 
-        broadcast(player.getAlias() + " is ready to walk the plank");
+        broadcast(player.getAlias() + " is ready to walk the plank\n");
+        broadcast(getPlayerList());
 
         synchronized (this) {
             if (players.size() == MAX_PLAYERS) {
@@ -198,7 +199,7 @@ class Room{
 
     private String getPlayerList() {
 
-        String names = "";
+        String names = "Buccaneers in the room:\n";
 
         for (Player player : players) {
             names = names + player.getAlias() + "\n";
