@@ -70,7 +70,7 @@ public class OutputBuilder {
                          "       \\               \"\"/  "};
 
         String[] sea = { ColorTerminal.ANSI_CYAN.getAnsi() + " ^~^~^~^~^`~^~^`^~^~^`^~^~^ ",
-                         "  ~^~^~`~~^~^`~^~^~`~~^~^~  " + ColorTerminal.ANSI_CYAN.getAnsi()};
+                         ColorTerminal.ANSI_CYAN.getAnsi() + "  ~^~^~`~~^~^`~^~^~`~~^~^~  " + ColorTerminal.ANSI_RESET.getAnsi()};
 
         String blankLine = "                             ";
 
