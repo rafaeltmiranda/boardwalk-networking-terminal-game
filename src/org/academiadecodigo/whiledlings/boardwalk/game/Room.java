@@ -55,6 +55,7 @@ class Room{
 
         players.add(player);
         player.inRoom = true;
+        player.resetLives();
         player.setRoom(this);
         playersInGame++;
 
@@ -99,7 +100,6 @@ class Room{
 
                 if (players.get(i).getLives() <= 0 ){
                     playersInGame--;
-                    players.get(i).inRoom = false;
                     continue;
                 }
 
@@ -109,6 +109,7 @@ class Room{
 
                 if (endGame) {
                     printWinner(players.get(i));
+                    sendPlayersToLobby();
                     break;
                 }
             }
@@ -256,14 +257,11 @@ class Room{
         players.add(player);
         player.inRoom = true;
         player.setRoom(this);
+        player.resetLives();
 
     }
 
     void broadcast(String message, Player fromPlayer) {
-
-        if (closed){
-            return;
-        }
 
         for (int i = 0; i < players.size(); i++) {
 
@@ -345,5 +343,18 @@ class Room{
             players.get(i).getPrompt().getUserInput(exitScanner);
         }
 
+        sendPlayersToLobby();
+    }
+
+
+    private void sendPlayersToLobby() {
+        for (Player player : players) {
+
+            player.inRoom = false;
+            if (!player.equals(roomOwner)){
+                Thread thread = new Thread(new Lobby(player.socket));
+                thread.start();
+            }
+        }
     }
 }
