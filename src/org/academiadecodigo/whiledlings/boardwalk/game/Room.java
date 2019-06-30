@@ -51,7 +51,7 @@ public class Room implements Runnable{
         player.inRoom = true;
         player.setRoom(this);
 
-        broadcast("Are you ready to walk the plank.", player);
+        broadcast(player.getAlias() + " is ready to walk the plank");
 
         if (players.size() == MAX_PLAYERS){
             closed = true;

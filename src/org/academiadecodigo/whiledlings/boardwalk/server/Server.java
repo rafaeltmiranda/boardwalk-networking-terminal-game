@@ -18,6 +18,7 @@ public class Server {
 
         try {
             serverSocket = new ServerSocket(port);
+            System.out.println("Server running");
             waitForConnection();
         } catch (IOException e) {
             System.out.println("! New IO exception: " + e.getMessage());
