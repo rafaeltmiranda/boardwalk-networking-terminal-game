@@ -180,8 +180,8 @@ public class OutputBuilder {
 
     public static String winner (Player player) {
 
-        String winner = "CONGRATULATIONS " + player.getAlias() +"!\n" +
-                "Sink me! Ye found the coffer!\n" + "\n" +
+        String winner = ColorTerminal.ANSI_GREEN.getAnsi() + "CONGRATULATIONS " + player.getAlias() +"!\n" +
+                "Sink me! Ye found the coffer's key!\n\n" + ColorTerminal.ANSI_YELLOW.getAnsi() +
                 "*******************************************************************************\n" +
                 "          |                   |                  |                     |\n" +
                 " _________|________________.=\"\"_;=.______________|_____________________|_______\n" +
@@ -201,7 +201,7 @@ public class OutputBuilder {
                 "/______/______/______/______/____\"=._o._; | ;_.--\"o.--\"_/______/______/______/_\n" +
                 "____/______/______/______/______/_____\"=.o|o_.--\"\"___/______/______/______/____\n" +
                 "/______/______/______/______/______/______/______/______/______/______/_______/\n" +
-                "*******************************************************************************";
+                "*******************************************************************************" + ColorTerminal.ANSI_RESET.getAnsi();
         return winner;
 
     }
