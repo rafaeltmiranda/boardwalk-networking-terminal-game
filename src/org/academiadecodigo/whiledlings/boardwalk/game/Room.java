@@ -7,7 +7,6 @@ import org.academiadecodigo.whiledlings.boardwalk.utility.ColorTerminal;
 import org.academiadecodigo.whiledlings.boardwalk.utility.OutputBuilder;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Set;
@@ -98,7 +97,7 @@ public class Room implements Runnable{
 
     private void printWinner(Player player) {
 
-
+        broadcast(OutputBuilder.clearScreen() + OutputBuilder.winner(player));
     }
 
     private boolean verifyResponse(String response) {
@@ -200,7 +199,7 @@ public class Room implements Runnable{
 
             try {
                 PrintWriter writer = new PrintWriter(players.get(i).socket.getOutputStream());
-                writer.println(ColorTerminal.ANSI_GREE.getAnsi() + fromPlayer.getAlias() + " -> " +
+                writer.println(ColorTerminal.ANSI_GREEN.getAnsi() + fromPlayer.getAlias() + " -> " +
                         ColorTerminal.ANSI_RESET.getAnsi() + message);
                 writer.flush();
             } catch (IOException e) {
