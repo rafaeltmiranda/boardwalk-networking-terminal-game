@@ -27,8 +27,7 @@ public class Lobby implements Runnable{
         room.joinRoom(player);
 
         if (room.checkIfPlayerInRoom(player)) {
-            Thread thread = new Thread(player);
-            thread.start();
+            player.listen();
         }
     }
 
@@ -135,11 +134,10 @@ public class Lobby implements Runnable{
             room.setPasswordProtectedTrue();
         }
 
-        Thread playerThread = new Thread(player);            // TODO: 29/06/2019 check this
-        playerThread.start();
+        System.out.println("Threads before new player thread: " + Thread.activeCount());
+        player.listen();
 
-        Thread roomThread = new Thread(room);
-        roomThread.start();
+        room.run();
     }
 
 

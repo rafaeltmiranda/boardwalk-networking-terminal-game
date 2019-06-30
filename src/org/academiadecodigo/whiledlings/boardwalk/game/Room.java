@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
-public class Room implements Runnable {
+class Room{
 
     private static final int MAX_PLAYERS = 5;
 
@@ -27,7 +27,7 @@ public class Room implements Runnable {
     private String password;
     private boolean endGame;
 
-    public Room(String name) {
+    Room(String name) {
         this.name = name;
         players = new ArrayList<>();
         alreadyChosen = new HashSet<>();
@@ -87,9 +87,9 @@ public class Room implements Runnable {
         getRandomPhrase();
 
         while (!endGame) {
-
+            System.out.println("Threads in while: " + Thread.activeCount());
             for (int i = 0; i < players.size(); i++) {
-
+                System.out.println("Threads in for: " + Thread.activeCount());
                 refreshScreen(players.get(i));
                 response = getResponse(players.get(i), "Your choice: ");
                 verifyResponse(response, players.get(i));
@@ -191,8 +191,8 @@ public class Room implements Runnable {
         return closed;
     }
 
-    @Override
-    public void run() {
+
+    void run() {
 
         synchronized (this) {
             while (!closed) {
@@ -205,7 +205,7 @@ public class Room implements Runnable {
 
             }
         }
-
+        System.out.println("Threads before start: " + Thread.activeCount());
         start();
     }
 
