@@ -108,43 +108,41 @@ public class Room implements Runnable {
 
     private void verifyResponse(String response, Player player) {
 
-        boolean existLetter = true;
+        boolean existLetter = false;
         char[] letters = response.toCharArray();
 
         if (response.length() == 1) {
 
-            while (existLetter) {
+            while (alreadyChosen.contains(letters[0])) {
 
-                if (alreadyChosen.contains(letters[0])) {
+                response = getResponse(player, "Letter already chosen, choice again: ");
 
-                    response = getResponse(player, "Letter already chosen, choice again: ");
-
-                    if (response.length() > 1){
-                        verifyResponse(response, player);
-                    }
-
-                    letters = response.toCharArray();
-
-                    continue;
+                if (response.length() > 1) {
+                    verifyResponse(response, player);
                 }
 
-                alreadyChosen.add(response.charAt(0));
-                existLetter = false;
+                letters = response.toCharArray();
+                continue;
+
             }
+
+            alreadyChosen.add(response.charAt(0));
 
             for (int i = 0; i < completePhrase.length; i++) {
 
                 if (letters[0] == completePhrase[i]) {
                     playablePhrase[i] = completePhrase[i];
+                    existLetter = true;
                 }
             }
 
-            System.out.println(playablePhrase);
-            System.out.println(completePhrase);
+            if (!existLetter){
+                player.subtractLife();
+            }
 
-            for (int i = 0; i < completePhrase.length; i++){
+            for (int i = 0; i < completePhrase.length; i++) {
 
-                if (completePhrase[i] == playablePhrase[i]){
+                if (completePhrase[i] == playablePhrase[i]) {
                     continue;
                 }
 
@@ -158,9 +156,9 @@ public class Room implements Runnable {
             return;
         }
 
-        for (int i = 0; i < completePhrase.length; i++){
+        for (int i = 0; i < completePhrase.length; i++) {
 
-            if (completePhrase[i] == letters[i]){
+            if (completePhrase[i] == letters[i]) {
                 continue;
             }
 
