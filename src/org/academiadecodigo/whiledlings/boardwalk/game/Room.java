@@ -103,20 +103,28 @@ class Room{
     }
 
     private void printWinner(Player player) {
-
         broadcast(OutputBuilder.clearScreen() + OutputBuilder.winner(player));
     }
 
     private void verifyResponse(String response, Player player) {
 
         boolean existLetter = true;
+        char[] letters = response.toCharArray();
 
         if (response.length() == 1) {
 
             while (existLetter) {
 
-                if (alreadyChosen.contains(response)) {
-                    getResponse(player, "Letter already chosen, choice again: ");
+                if (alreadyChosen.contains(letters[0])) {
+
+                    response = getResponse(player, "Letter already chosen, choice again: ");
+
+                    if (response.length() > 1){
+                        verifyResponse(response, player);
+                    }
+
+                    letters = response.toCharArray();
+
                     continue;
                 }
 
@@ -124,18 +132,46 @@ class Room{
                 existLetter = false;
             }
 
-            char letter = response.charAt(0);
             for (int i = 0; i < completePhrase.length; i++) {
 
-                if (letter == completePhrase[i]) {
+                if (letters[0] == completePhrase[i]) {
                     playablePhrase[i] = completePhrase[i];
                 }
+            }
+
+            System.out.println(playablePhrase);
+            System.out.println(completePhrase);
+
+            for (int i = 0; i < completePhrase.length; i++){
+
+                if (completePhrase[i] == playablePhrase[i]){
+                    continue;
+                }
+
+                return;
+            }
+
+            endGame = true;
+            //if (playablePhrase.equals(completePhrase)){
+            //    endGame = true;
+            //}
+            return;
+        }
+
+        for (int i = 0; i < completePhrase.length; i++){
+
+            if (completePhrase[i] == letters[i]){
+                continue;
             }
 
             return;
         }
 
-        if (response.toCharArray().equals(completePhrase)) endGame = true;
+        endGame = true;
+
+        //if (letters.equals(completePhrase)) {
+        //    endGame = true;
+        //}
 
     }
 
