@@ -5,6 +5,7 @@ import org.academiadecodigo.whiledlings.boardwalk.game.Player;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.List;
 
 public class OutputBuilder {
 
@@ -53,6 +54,40 @@ public class OutputBuilder {
                 "   |  [.     [..[..        [..  [...... [..  [..  [..    [..    [..[.. [. [.. [..  [...... [..  [..      [..  [.. \n" +
                 "   |  [.      [.  [..     [..  [..       [.. [..    [..  [..   [.. [. [.    [.... [..       [.. [..      [..   [.. \n" +
                 "   |  [.... [..     [....     [..         [..[..      [..[.....    [..        [..[..         [..[........[..     [.. \n\n";
+    }
+
+    public static void ship(List players) {
+
+        String[] ship = {"             ;~             ",
+                         "           ./|\\.            ",
+                         "         ./ /| `\\.          ",
+                         "        /  | |   `\\.        ",
+                         "       |   | |     `\\.      ",
+                         "       |    \\|       `\\.    ",
+                         "     .  `----|__________\\.  ",
+                         "      \\-----''----.....___  ",
+                         "       \\               \"\"/  "};
+
+        String[] sea = { " ^~^~^~^~^`~^~^`^~^~^`^~^~^ ",
+                         "  ~^~^~`~~^~^`~^~^~`~~^~^~  "};
+
+        String blankLine = "                             ";
+
+        String[] finalString = {"","","","","","","","","","","",""};
+
+        for (int i=0; i<finalString.length; i++) {
+
+            if (i==9) {
+                finalString[i] += sea[0];
+                continue;
+            }
+            if (i == 10) {
+                finalString[i] += sea[1];
+                continue;
+            }
+
+        }
+
     }
 
     public static void drawLogo(Socket playerSocket) {
