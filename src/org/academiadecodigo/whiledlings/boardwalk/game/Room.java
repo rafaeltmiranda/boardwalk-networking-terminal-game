@@ -90,16 +90,18 @@ class Room{
 
         String response;
         getRandomPhrase();
+        boolean correctGuess;
 
         while (!endGame) {
-            for (Player player : players) {
+            for (int i = 0; i < players.size(); i++) {
+                Player player = players.get(i);
 
                 if (playersInGame == 0) {
                     onLoosers();
                     return;
                 }
 
-                if (!player.inGame){
+                if (!player.inGame) {
                     continue;
                 }
 
@@ -112,7 +114,11 @@ class Room{
 
                 refreshScreen(player);
                 response = getResponse(player, "Your choice: ");
-                verifyResponse(response, player);
+                correctGuess = verifyResponse(response, player);
+
+                if (correctGuess){
+                    i--;
+                }
 
                 if (endGame) {
                     printWinner(player);
@@ -134,7 +140,7 @@ class Room{
         }
     }
 
-    private void verifyResponse(String response, Player player) {
+    private boolean verifyResponse(String response, Player player) {
 
         boolean existLetter = false;
         char[] letters = response.toCharArray();
@@ -174,11 +180,11 @@ class Room{
                     continue;
                 }
 
-                return;
+                return existLetter;
             }
 
             endGame = true;
-            return;
+            return existLetter;
         }
 
         for (int i = 0; i < completePhrase.length; i++) {
@@ -189,10 +195,11 @@ class Room{
 
             player.subtractLife();
             player.subtractLife();
-            return;
+            return existLetter;
         }
 
         endGame = true;
+        return existLetter;
 
     }
 
