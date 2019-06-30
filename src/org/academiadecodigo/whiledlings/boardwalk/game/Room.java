@@ -87,9 +87,7 @@ class Room{
         getRandomPhrase();
 
         while (!endGame) {
-            System.out.println("Threads in while: " + Thread.activeCount());
             for (int i = 0; i < players.size(); i++) {
-                System.out.println("Threads in for: " + Thread.activeCount());
                 refreshScreen(players.get(i));
                 response = getResponse(players.get(i), "Your choice: ");
                 verifyResponse(response, players.get(i));
@@ -205,7 +203,6 @@ class Room{
 
             }
         }
-        System.out.println("Threads before start: " + Thread.activeCount());
         start();
     }
 
@@ -219,6 +216,10 @@ class Room{
     }
 
     void broadcast(String message, Player fromPlayer) {
+
+        if (closed){
+            return;
+        }
 
         for (int i = 0; i < players.size(); i++) {
 

@@ -19,7 +19,6 @@ public class Server {
         try {
             serverSocket = new ServerSocket(PORT);
             System.out.println("Server running");
-            System.out.println("Threads after init server: " + Thread.activeCount());
             waitForConnection();
         } catch (IOException e) {
             System.out.println("! New IO exception: " + e.getMessage());
@@ -28,7 +27,6 @@ public class Server {
     }
 
     private void waitForConnection() throws IOException {
-        System.out.println("Threads before wait connection" + Thread.activeCount());
         while(true) {
             Socket clientSocket = serverSocket.accept();
             threadPool.submit(new Lobby(clientSocket));
