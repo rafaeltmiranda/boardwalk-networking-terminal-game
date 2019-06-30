@@ -242,17 +242,18 @@ public class Lobby implements Runnable{
 
     private void instructions () {
 
-        String instructions = "Ahoy, Matey!\n" +
+        String instructions = OutputBuilder.ANSI_BLUE +  OutputBuilder.ANSI_WHITE_BACKGROUND + "Ahoy, Matey!\n" +
                 "Welcome to the Board walk game! To be successful, follow the instructions below.\n" +
+                OutputBuilder.ANSI_GREEN + OutputBuilder.ANSI_BLACK_BACKGROUND +
                 "1. In turns, each Buccaneer will try to guess a letter or a whole expression.\n" +
-                "2. Guessing a letter:\n" +
+                "2. Guessing a letter:\n" + OutputBuilder.ANSI_CYAN +
                 "  -> Right: you have the chance to take another guess.\n" +
-                "  -> Wrong: you are one step closer to sinking the ship!\n" +
-                "3. Guessing the whole expression:\n" +
-                "  ->Right: you found the coffer. Enjoy your doubloons!\n" +
-                "  ->Wrong: you are two steps closer to sinking you ship. Watch out!\n" +
+                "  -> Wrong: you are one step closer to sinking the ship!\n" + OutputBuilder.ANSI_GREEN +
+                "3. Guessing the whole expression:\n" + OutputBuilder.ANSI_CYAN +
+                "  -> Right: you found the coffer. Enjoy your doubloons!\n" +
+                "  -> Wrong: you are two steps closer to sinking you ship. Watch out!\n" + OutputBuilder.ANSI_GREEN +
                 "4. The winner is the Bucko who guesses the last letter or the whole expression.\n" +
-                "Be wise or be reckless, just don't feed the fish!";
+                "Be wise or be reckless, just don't feed the fish!" + OutputBuilder.ANSI_RESET;
 
         String [] menuInstructionsOptions = {"Go back."};
         MenuInputScanner menuInstructions = new MenuInputScanner(menuInstructionsOptions);
