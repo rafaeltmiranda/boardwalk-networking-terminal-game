@@ -10,7 +10,7 @@ public class Player implements Runnable{
 
     Socket socket;
     String alias;
-    private int points;
+    private int lives;
     private Prompt prompt;
     boolean inRoom;
     BufferedReader inputStream = null;
@@ -20,7 +20,7 @@ public class Player implements Runnable{
 
         inRoom = false;
         this.socket = socket;
-        points = 100;
+        lives = 5;
 
         try {
             inputStream = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -35,17 +35,8 @@ public class Player implements Runnable{
     }
 
 
-    void addPoints(int points){
-
-        this.points += points;
-    }
-
-
-    void subtractPoints(int points){
-
-        if ((this.points -= points) < 0){
-           this.points = 0;
-        }
+    void subtractLife(){
+        lives--;
     }
 
 
@@ -87,5 +78,17 @@ public class Player implements Runnable{
                 e.printStackTrace();
             }
         }
+    }
+
+    public int getLives() {
+        return lives;
+    }
+
+    public String getAlias() {
+        return alias;
+    }
+
+    public Socket getSocket() {
+        return socket;
     }
 }
