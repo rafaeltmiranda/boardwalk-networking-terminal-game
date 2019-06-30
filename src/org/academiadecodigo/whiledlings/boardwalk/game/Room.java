@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
-public class Room implements Runnable {
+class Room{
 
     private static final int MAX_PLAYERS = 5;
 
@@ -27,7 +27,7 @@ public class Room implements Runnable {
     private String password;
     private boolean endGame;
 
-    public Room(String name) {
+    Room(String name) {
         this.name = name;
         players = new ArrayList<>();
         alreadyChosen = new HashSet<>();
@@ -56,7 +56,8 @@ public class Room implements Runnable {
         player.inRoom = true;
         player.setRoom(this);
 
-        broadcast(player.getAlias() + " is ready to walk the plank");
+        broadcast(player.getAlias() + " is ready to walk the plank\n");
+        broadcast(getPlayerList());
 
         synchronized (this) {
             if (players.size() == MAX_PLAYERS) {
@@ -87,9 +88,7 @@ public class Room implements Runnable {
         getRandomPhrase();
 
         while (!endGame) {
-
             for (int i = 0; i < players.size(); i++) {
-
                 refreshScreen(players.get(i));
                 response = getResponse(players.get(i), "Your choice: ");
                 verifyResponse(response, players.get(i));
@@ -198,7 +197,7 @@ public class Room implements Runnable {
 
     private String getPlayerList() {
 
-        String names = "";
+        String names = "Buccaneers in the room:\n";
 
         for (Player player : players) {
             names = names + player.getAlias() + "\n";
@@ -225,8 +224,8 @@ public class Room implements Runnable {
         return closed;
     }
 
-    @Override
-    public void run() {
+
+    void run() {
 
         synchronized (this) {
             while (!closed) {
@@ -239,7 +238,6 @@ public class Room implements Runnable {
 
             }
         }
-
         start();
     }
 
@@ -253,6 +251,10 @@ public class Room implements Runnable {
     }
 
     void broadcast(String message, Player fromPlayer) {
+
+        if (closed){
+            return;
+        }
 
         for (int i = 0; i < players.size(); i++) {
 

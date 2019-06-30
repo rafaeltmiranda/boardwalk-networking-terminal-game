@@ -8,10 +8,13 @@ import org.academiadecodigo.whiledlings.boardwalk.utility.OutputBuilder;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.CookieHandler;
 import java.net.Socket;
 import java.util.ArrayList;
 
 public class Lobby implements Runnable{
+
+    private static final int BLANK_SPACES_AFTER_ROOM_NAME = 5;
 
     private static ArrayList<Room> rooms = new ArrayList<>();
     private Player player;
@@ -25,8 +28,7 @@ public class Lobby implements Runnable{
         room.joinRoom(player);
 
         if (room.checkIfPlayerInRoom(player)) {
-            Thread thread = new Thread(player);
-            thread.start();
+            player.listen();
         }
     }
 
@@ -45,7 +47,7 @@ public class Lobby implements Runnable{
             return;
         }
         options[answerIndex - 1] = options[answerIndex - 1].
-                substring(0, options[answerIndex - 1].indexOf('[') - 5);
+                substring(0, options[answerIndex - 1].indexOf('[') - BLANK_SPACES_AFTER_ROOM_NAME);
 
         Room selectedRoom = null;
 
@@ -64,7 +66,7 @@ public class Lobby implements Runnable{
 
         for (Room room : rooms) {
             if (!room.isClosed()) {
-                optionsString += room.getName() + "     " +
+                optionsString += room.getName() + addBlankSpaces() +
                         (room.passwordProtected ? "[PASSWORD PROTECTED]" :
                         "[OPEN]") + " - " + room.getNumberOfPlayers() +
                         " players in room" + "|";
@@ -75,6 +77,16 @@ public class Lobby implements Runnable{
         String options[] = optionsString.split("\\|");
 
         return options;
+    }
+
+
+    private String addBlankSpaces() {
+        String result = "";
+
+        for (int i = 0; i < BLANK_SPACES_AFTER_ROOM_NAME; i++) {
+            result += " ";
+        }
+        return result;
     }
 
 
@@ -123,11 +135,9 @@ public class Lobby implements Runnable{
             room.setPasswordProtectedTrue();
         }
 
-        Thread playerThread = new Thread(player);            // TODO: 29/06/2019 check this
-        playerThread.start();
+        player.listen();
 
-        Thread roomThread = new Thread(room);
-        roomThread.start();
+        room.run();
     }
 
 
@@ -240,19 +250,19 @@ public class Lobby implements Runnable{
 
     private void instructions () {
 
-        String instructions = ColorTerminal.ANSI_BLUE.getAnsi() + ColorTerminal.ANSI_WHITE_BACKGROUND.getAnsi() + "Ahoy, Matey!\n" +
-                "Welcome to the Board walk game! To be successful, follow the instructions below.\n" +
-                ColorTerminal.ANSI_GREEN.getAnsi() + ColorTerminal.ANSI_BLACK_BACKGROUND.getAnsi() +
+        String instructions = ColorTerminal.ANSI_YELLOW.getAnsi() + "Ahoy, Matey!\n" +
+                "Welcome to the Boardwalk game! To be successful, follow the instructions below.\n\n" +
+                ColorTerminal.ANSI_CYAN.getAnsi() +
                 "1. When waiting in a room, the room owner may type \"start\" to begin the game at any time\n" +
                 "2. In turns, each Buccaneer will try to guess a letter or a whole expression.\n" +
-                "3. Guessing a letter:\n" + ColorTerminal.ANSI_CYAN.getAnsi() +
-                "  -> Right: you have the chance to take another guess.\n" +
-                "  -> Wrong: you are one step closer to sinking the ship!\n" + ColorTerminal.ANSI_GREEN.getAnsi() +
-                "4. Guessing the whole expression:\n" + ColorTerminal.ANSI_CYAN.getAnsi() +
-                "  -> Right: you found the coffer. Enjoy your doubloons!\n" +
-                "  -> Wrong: you are two steps closer to sinking your ship. Watch out!\n" + ColorTerminal.ANSI_GREEN.getAnsi() +
+                "3. Guessing a letter:\n" +
+                ColorTerminal.ANSI_GREEN.getAnsi() + "  -> Right: you have the chance to take another guess.\n" +
+                ColorTerminal.ANSI_RED.getAnsi() + "  -> Wrong: you are one step closer to sinking the ship!\n" + ColorTerminal.ANSI_CYAN.getAnsi() +
+                "4. Guessing the whole expression:\n" +
+                ColorTerminal.ANSI_GREEN.getAnsi() + "  -> Right: you found the coffer. Enjoy your doubloons!\n" +
+                ColorTerminal.ANSI_RED.getAnsi() +  "  -> Wrong: you are two steps closer to sinking your ship. Watch out!\n" + ColorTerminal.ANSI_CYAN.getAnsi() +
                 "5. The winner is the Bucko who guesses the last letter or the whole expression.\n" +
-                "Be wise or be reckless, just don't feed the fish!  " + ColorTerminal.ANSI_RESET.getAnsi();
+                "Be wise or be reckless, just don't feed the fish!" + ColorTerminal.ANSI_RESET.getAnsi();
 
         String [] menuInstructionsOptions = {"Go back."};
         MenuInputScanner menuInstructions = new MenuInputScanner(menuInstructionsOptions);

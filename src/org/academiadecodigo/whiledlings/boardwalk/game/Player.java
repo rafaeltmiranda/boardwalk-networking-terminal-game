@@ -6,7 +6,7 @@ import org.academiadecodigo.whiledlings.boardwalk.utility.Closer;
 import java.io.*;
 import java.net.Socket;
 
-public class Player implements Runnable{
+public class Player{
 
     private static final int MAXIMUM_LIVES = 5;
 
@@ -18,7 +18,7 @@ public class Player implements Runnable{
     BufferedReader inputStream = null;
     private Room room;
 
-    public Player(Socket socket){
+    Player(Socket socket){
 
         inRoom = false;
         this.socket = socket;
@@ -47,11 +47,6 @@ public class Player implements Runnable{
         this.alias = alias;
     }
 
-    @Override
-    public void run() {
-
-        listen();
-    }
 
     void setRoom(Room room){
 
@@ -59,7 +54,7 @@ public class Player implements Runnable{
     }
 
 
-    private void listen() {
+    void listen() {
 
         String message = null;
 
@@ -81,6 +76,7 @@ public class Player implements Runnable{
             }
         }
     }
+
 
     public int getLives() {
         return lives;
