@@ -9,9 +9,10 @@ import org.academiadecodigo.whiledlings.boardwalk.utility.OutputBuilder;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Set;
 
-public class Room implements Runnable{
+public class Room implements Runnable {
 
     private static final int MAX_PLAYERS = 5;
 
@@ -29,20 +30,21 @@ public class Room implements Runnable{
     public Room(String name) {
         this.name = name;
         players = new ArrayList<>();
+        alreadyChosen = new HashSet<>();
     }
 
-    void joinRoom(Player player){
+    void joinRoom(Player player) {
 
         StringInputScanner notify = new StringInputScanner();
         notify.setMessage("Sorry, the room " + name + " is closed :(\nEnter any key to back for menu:");
 
-        if (closed){
+        if (closed) {
             player.getPrompt().getUserInput(notify);
             return;
         }
 
-        if (passwordProtected){
-            if (!checkPassword(player)){
+        if (passwordProtected) {
+            if (!checkPassword(player)) {
                 notify.setMessage("Wrong password, you fresh water sailor\n" +
                         "Enter any key to go back\n");
                 player.getPrompt().getUserInput(notify);
@@ -56,20 +58,23 @@ public class Room implements Runnable{
 
         broadcast(player.getAlias() + " is ready to walk the plank");
 
-        if (players.size() == MAX_PLAYERS){
-            closed = true;
+        synchronized (this) {
+            if (players.size() == MAX_PLAYERS) {
+                closed = true;
+                notifyAll();
+            }
         }
 
     }
 
-    private boolean checkPassword(Player player){
+    private boolean checkPassword(Player player) {
         PasswordInputScanner passwordInputScanner = new PasswordInputScanner();
         passwordInputScanner.setMessage("Enter password\n");
         String password = null;
 
         password = player.getPrompt().getUserInput(passwordInputScanner);
 
-        if (password.equals(this.password)){
+        if (password.equals(this.password)) {
             return true;
         }
 
@@ -84,14 +89,16 @@ public class Room implements Runnable{
         while (!endGame) {
 
             for (int i = 0; i < players.size(); i++) {
+
                 refreshScreen(players.get(i));
-                response = getResponse(players.get(i));
-                if (verifyResponse(response)){
+                response = getResponse(players.get(i), "Your choice: ");
+                verifyResponse(response, players.get(i));
+
+                if (endGame) {
                     printWinner(players.get(i));
                     break;
                 }
             }
-
         }
     }
 
@@ -100,34 +107,58 @@ public class Room implements Runnable{
         broadcast(OutputBuilder.clearScreen() + OutputBuilder.winner(player));
     }
 
-    private boolean verifyResponse(String response) {
+    private void verifyResponse(String response, Player player) {
 
-        if (response.length() > 1){
-            if (response.toCharArray() == completePhrase){
-                endGame = true;
-                return true;
+        boolean existLetter = true;
+
+        if (response.length() == 1) {
+
+            while (existLetter) {
+
+                if (alreadyChosen.contains(response)) {
+                    getResponse(player, "Letter already chosen, choice again: ");
+                    continue;
+                }
+
+                alreadyChosen.add(response.charAt(0));
+                existLetter = false;
             }
+
+            char letter = response.charAt(0);
+            for (int i = 0; i < completePhrase.length; i++) {
+
+                if (letter == completePhrase[i]) {
+                    playablePhrase[i] = completePhrase[i];
+                }
+            }
+
+            return;
         }
 
-        return false;
+        if (response.toCharArray().equals(completePhrase)) endGame = true;
+
     }
 
     private void refreshScreen(Player player) {
 
         OutputBuilder.broadcastLogo(players);
+        String phrase = OutputBuilder.buildOutput(playablePhrase);
+        broadcast(phrase);
         OutputBuilder.ship(players);
-        OutputBuilder.buildOutput(playablePhrase);
-        broadcast("Wait " + player.getAlias() + "play.", player);
+        broadcast("Wait " + player.getAlias() + " play.", player);
 
     }
 
-    private String getResponse(Player player) {
+    private String getResponse(Player player, String message) {
 
-        String request;
+        String response;
         StringInputScanner question = new StringInputScanner();
-        request = player.getPrompt().getUserInput(question);
+        question.setMessage(message);
 
-        return request;
+        response = player.getPrompt().getUserInput(question);
+        response = response.toUpperCase();
+
+        return response;
 
     }
 
@@ -135,14 +166,14 @@ public class Room implements Runnable{
 
         String names = "";
 
-        for (Player player : players){
+        for (Player player : players) {
             names = names + player.getAlias() + "\n";
         }
 
         return names;
     }
 
-    private void getRandomPhrase(){
+    private void getRandomPhrase() {
 
         completePhrase = Phrases.values()[(int) (Math.random() * Phrases.values().length)].getPhraseAsCharArray();
         playablePhrase = new char[completePhrase.length];
@@ -178,7 +209,7 @@ public class Room implements Runnable{
         start();
     }
 
-    void addOwnerPlayer(Player player){
+    void addOwnerPlayer(Player player) {
 
         roomOwner = player;
         players.add(player);
@@ -187,11 +218,11 @@ public class Room implements Runnable{
 
     }
 
-    void broadcast(String message, Player fromPlayer){
+    void broadcast(String message, Player fromPlayer) {
 
-        for (int i = 0; i < players.size(); i++){
+        for (int i = 0; i < players.size(); i++) {
 
-            if (players.get(i).equals(fromPlayer)){
+            if (players.get(i).equals(fromPlayer)) {
                 continue;
             }
 
@@ -211,7 +242,7 @@ public class Room implements Runnable{
 
     void broadcast(String message) {
 
-        for (int i = 0; i < players.size(); i++){
+        for (int i = 0; i < players.size(); i++) {
 
             try {
                 PrintWriter writer = new PrintWriter(players.get(i).socket.getOutputStream());
@@ -224,22 +255,22 @@ public class Room implements Runnable{
         }
     }
 
-    void removePlayer(Player player){
+    void removePlayer(Player player) {
         players.remove(player);
         player.inRoom = false;
     }
 
-    private synchronized void checkOwner(String message, Player player){
+    private synchronized void checkOwner(String message, Player player) {
 
-        if (player.equals(roomOwner)){
-            if (message.equals("start")){
+        if (player.equals(roomOwner)) {
+            if (message.equals("start")) {
                 closed = true;
                 notifyAll();
             }
         }
     }
 
-    void setPasswordProtectedTrue(){
+    void setPasswordProtectedTrue() {
         passwordProtected = true;
     }
 
@@ -247,15 +278,15 @@ public class Room implements Runnable{
         this.password = password;
     }
 
-    boolean checkIfPlayerInRoom(Player player){
+    boolean checkIfPlayerInRoom(Player player) {
 
-        if (players.contains(player)){
+        if (players.contains(player)) {
             return true;
         }
         return false;
     }
 
-    int getNumberOfPlayers(){
+    int getNumberOfPlayers() {
         return players.size();
     }
 }

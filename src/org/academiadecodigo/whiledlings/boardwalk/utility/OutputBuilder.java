@@ -69,8 +69,8 @@ public class OutputBuilder {
                          "      \\-----''----.....___  ",
                          "       \\               \"\"/  "};
 
-        String[] sea = { " ^~^~^~^~^`~^~^`^~^~^`^~^~^ ",
-                         "  ~^~^~`~~^~^`~^~^~`~~^~^~  "};
+        String[] sea = { ColorTerminal.ANSI_CYAN.getAnsi() + " ^~^~^~^~^`~^~^`^~^~^`^~^~^ ",
+                         ColorTerminal.ANSI_CYAN.getAnsi() + "  ~^~^~`~~^~^`~^~^~`~~^~^~  " + ColorTerminal.ANSI_RESET.getAnsi()};
 
         String blankLine = "                             ";
 
@@ -112,7 +112,7 @@ public class OutputBuilder {
                     continue;
                 }
 
-                finalArray[i] += ship[i-missingLives];      // Write remaining ship lines
+                finalArray[i] += ship[i-missingLives*2];      // Write remaining ship lines
 
             }
 
