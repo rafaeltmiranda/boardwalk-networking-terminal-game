@@ -115,7 +115,7 @@ public class Room implements Runnable{
 
     private void refreshScreen(Player player) {
 
-        OutputBuilder.drawLogo(players);
+        OutputBuilder.broadcastLogo(players);
         OutputBuilder.ship(players);
         OutputBuilder.buildOutput(playablePhrase);
         broadcast("Wait " + player.getAlias() + "play.", player);
