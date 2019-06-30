@@ -20,7 +20,7 @@ public class Room implements Runnable{
     private String name;
     private Player roomOwner;
     private boolean closed;
-    private boolean passwordProtected;
+    boolean passwordProtected;
     private String password;
 
     public Room (String name){
