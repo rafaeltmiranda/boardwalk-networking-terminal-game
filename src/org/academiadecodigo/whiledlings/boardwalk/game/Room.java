@@ -149,9 +149,6 @@ class Room{
             }
 
             endGame = true;
-            //if (playablePhrase.equals(completePhrase)){
-            //    endGame = true;
-            //}
             return;
         }
 
@@ -161,14 +158,12 @@ class Room{
                 continue;
             }
 
+            player.subtractLife();
+            player.subtractLife();
             return;
         }
 
         endGame = true;
-
-        //if (letters.equals(completePhrase)) {
-        //    endGame = true;
-        //}
 
     }
 
