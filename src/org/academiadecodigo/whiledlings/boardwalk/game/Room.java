@@ -7,6 +7,7 @@ import org.academiadecodigo.whiledlings.boardwalk.utility.ColorTerminal;
 import org.academiadecodigo.whiledlings.boardwalk.utility.OutputBuilder;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Set;
@@ -24,8 +25,9 @@ public class Room implements Runnable{
     private boolean closed;
     boolean passwordProtected;
     private String password;
+    private boolean endGame;
 
-    public Room (String name){
+    public Room(String name) {
         this.name = name;
         players = new ArrayList<>();
     }
@@ -76,7 +78,58 @@ public class Room implements Runnable{
     }
 
     private void start() {
-        System.out.println("Start");
+
+        String response;
+        getRandomPhrase();
+
+        while (!endGame) {
+
+            for (int i = 0; i < players.size(); i++) {
+                refreshScreen(players.get(i));
+                response = getResponse(players.get(i));
+                if (verifyResponse(response)){
+                    printWinner(players.get(i));
+                    break;
+                }
+            }
+
+        }
+    }
+
+    private void printWinner(Player player) {
+
+
+    }
+
+    private boolean verifyResponse(String response) {
+
+        if (response.length() > 1){
+            if (response.toCharArray() == completePhrase){
+                endGame = true;
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private void refreshScreen(Player player) {
+
+        OutputBuilder.drawLogo(players);
+        OutputBuilder.ship(players);
+        OutputBuilder.buildOutput(playablePhrase);
+        broadcast("Wait " + player.getAlias() + "play.", player);
+
+    }
+
+    private String getResponse(Player player) {
+
+        String request;
+        StringInputScanner question = new StringInputScanner();
+        request = player.getPrompt().getUserInput(question);
+
+        return request;
+
     }
 
     private String getPlayerList() {
@@ -95,7 +148,7 @@ public class Room implements Runnable{
         completePhrase = Phrases.values()[(int) (Math.random() * Phrases.values().length)].getPhraseAsCharArray();
         playablePhrase = new char[completePhrase.length];
 
-        for (int i = 0; i < completePhrase.length ; i++) {
+        for (int i = 0; i < completePhrase.length; i++) {
             playablePhrase[i] = completePhrase[i] == ' ' ? ' ' : '_';
         }
     }
