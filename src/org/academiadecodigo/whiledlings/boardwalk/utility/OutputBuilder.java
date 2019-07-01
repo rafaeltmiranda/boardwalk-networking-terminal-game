@@ -103,7 +103,7 @@ public class OutputBuilder {
 
                     int numOfSpaces = blankLine.length()-4 - player.getAlias().length();
                     finalArray[i] += "  " + player.getAlias();
-                    for (int j=0; j<numOfSpaces + 1; j++) {
+                    for (int j=0; j<numOfSpaces + 2; j++) {
                         finalArray[i] += " ";
                     }
                     continue;
@@ -180,7 +180,7 @@ public class OutputBuilder {
 
     public static String winner (Player player) {
 
-        String winner = ColorTerminal.ANSI_GREEN.getAnsi() + "CONGRATULATIONS " + player.getAlias() +"!\n" +
+        String winner = ColorTerminal.ANSI_GREEN.getAnsi() + "\nCONGRATULATIONS " + player.getAlias() +"!\n\n" +
                 "Sink me! Ye found the coffer's key!\n\n" + ColorTerminal.ANSI_YELLOW.getAnsi() +
                 "*******************************************************************************\n" +
                 "          |                   |                  |                     |\n" +
