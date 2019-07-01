@@ -24,7 +24,7 @@ public class Lobby implements Runnable{
     }
 
     private void joinRoom(Room room){
-        OutputBuilder.drawLogo(player.socket);
+        OutputBuilder.drawLogo(player.getSocket());
         room.joinRoom(player);
 
         if (room.checkIfPlayerInRoom(player)) {
@@ -34,7 +34,7 @@ public class Lobby implements Runnable{
 
     private void roomListMenu() {
 
-        OutputBuilder.drawLogo(player.socket);
+        OutputBuilder.drawLogo(player.getSocket());
 
         String[] options = getRoomsAsString();
 
@@ -98,14 +98,14 @@ public class Lobby implements Runnable{
 
         password = passwordProtect();
 
-        OutputBuilder.drawLogo(player.socket);
+        OutputBuilder.drawLogo(player.getSocket());
 
         boolean differentName = false;
         String roomName = null;
         PrintWriter writer = null;
 
         try {
-             writer = new PrintWriter(player.socket.getOutputStream());
+             writer = new PrintWriter(player.getSocket().getOutputStream());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -124,7 +124,7 @@ public class Lobby implements Runnable{
 
         }
 
-        OutputBuilder.drawLogo(player.socket);
+        OutputBuilder.drawLogo(player.getSocket());
 
         Room room = new Room(roomName);
         rooms.add(room);
@@ -154,7 +154,7 @@ public class Lobby implements Runnable{
         PasswordInputScanner password2 = new PasswordInputScanner();
         password2.setMessage("Repeat password\n");
 
-        OutputBuilder.drawLogo(player.socket);
+        OutputBuilder.drawLogo(player.getSocket());
 
         answer = player.getPrompt().getUserInput(passwordMenu);
 
@@ -188,7 +188,7 @@ public class Lobby implements Runnable{
 
         try {
 
-            writer = new PrintWriter(player.socket.getOutputStream());
+            writer = new PrintWriter(player.getSocket().getOutputStream());
             writer.println(OutputBuilder.logo());
             writer.println("What is you pirate name?");
             writer.flush();
@@ -214,7 +214,7 @@ public class Lobby implements Runnable{
 
         while (!player.inRoom) {
 
-            OutputBuilder.drawLogo(player.socket);
+            OutputBuilder.drawLogo(player.getSocket());
 
             int answerIndex = player.getPrompt().getUserInput(menuScanner);
 
@@ -269,7 +269,7 @@ public class Lobby implements Runnable{
         menuInstructions.setMessage(instructions);
 
 
-        OutputBuilder.drawLogo(player.socket);
+        OutputBuilder.drawLogo(player.getSocket());
         int answerIndex = player.getPrompt().getUserInput(menuInstructions);
 
         if (answerIndex == 1) {

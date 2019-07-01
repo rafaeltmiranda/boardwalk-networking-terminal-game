@@ -10,7 +10,7 @@ public class Player{
 
     private static final int MAXIMUM_LIVES = 5;
 
-    Socket socket;
+    private Socket socket;
     private String alias;
     private int lives;
     private Prompt prompt;
@@ -64,7 +64,7 @@ public class Player{
             try {
                 message = inputStream.readLine();
 
-                if (message == null){        // TODO: 29/06/2019 check if this is right 
+                if (message == null){
                     Closer.close(socket);
                     room.removePlayer(this);
                     return;
