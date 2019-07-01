@@ -86,6 +86,7 @@ class Room{
         return false;
     }
 
+
     private void start() {
 
         String response;
@@ -97,7 +98,7 @@ class Room{
                 Player player = players.get(i);
 
                 if (playersInGame == 0) {
-                    onLoosers();
+                    onLosers();
                     return;
                 }
 
@@ -105,7 +106,6 @@ class Room{
                     continue;
                 }
 
-                System.out.println(player.getLives());
                 if (player.getLives() <= 0) {
                     playersInGame--;
                     player.inGame = false;
@@ -135,8 +135,8 @@ class Room{
         StringInputScanner exitScanner = new StringInputScanner();
         exitScanner.setMessage("\n Press any key to leave the game");
 
-        for (int i = 0; i < players.size(); i++) {
-            players.get(i).getPrompt().getUserInput(exitScanner);
+        for (Player player1 : players) {
+            player1.getPrompt().getUserInput(exitScanner);
         }
     }
 
@@ -281,20 +281,26 @@ class Room{
         player.resetLives();
         player.inGame = true;
 
+        try {
+            player.getSocket().getOutputStream().write("Waiting for other players\n".getBytes());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     void broadcast(String message, Player fromPlayer) {
 
-        for (int i = 0; i < players.size(); i++) {
+        for (Player player : players) {
 
-            if (players.get(i).equals(fromPlayer)) {
+            if (player.equals(fromPlayer)) {
                 continue;
             }
 
             checkOwner(message, fromPlayer);
 
             try {
-                PrintWriter writer = new PrintWriter(players.get(i).socket.getOutputStream());
+                PrintWriter writer = new PrintWriter(player.getSocket().getOutputStream());
                 writer.println(ColorTerminal.ANSI_GREEN.getAnsi() + fromPlayer.getAlias() + " -> " +
                         ColorTerminal.ANSI_RESET.getAnsi() + message);
                 writer.flush();
@@ -307,10 +313,10 @@ class Room{
 
     void broadcast(String message) {
 
-        for (int i = 0; i < players.size(); i++) {
+        for (Player player : players) {
 
             try {
-                PrintWriter writer = new PrintWriter(players.get(i).socket.getOutputStream());
+                PrintWriter writer = new PrintWriter(player.getSocket().getOutputStream());
                 writer.println(message);
                 writer.flush();
             } catch (IOException e) {
@@ -355,11 +361,11 @@ class Room{
         return players.size();
     }
 
-    private void onLoosers () {
+    private void onLosers() {
         broadcast(OutputBuilder.logo() + OutputBuilder.buildOutput(completePhrase) + OutputBuilder.allLoosers());
 
         StringInputScanner exitScanner = new StringInputScanner();
-        exitScanner.setMessage("\n Press any key to leave the game");
+        exitScanner.setMessage("\n Press any key and \"Enter\" to leave the game");
 
         for (int i = 0; i < players.size(); i++) {
             players.get(i).getPrompt().getUserInput(exitScanner);
@@ -374,7 +380,7 @@ class Room{
 
             player.inRoom = false;
             if (!player.equals(roomOwner)){
-                Thread thread = new Thread(new Lobby(player.socket));
+                Thread thread = new Thread(new Lobby(player.getSocket()));
                 thread.start();
             }
         }
