@@ -15,7 +15,7 @@ Run the program and connect the clients via Netcat to the IP of the machine wher
 
 Players choose an alias  
 Create a room to play or join the one already created  
-Protect the room with password (optional) 
+Protect the room with password (optional)  
 Chat in the room before game starts  
 Can't choose an already chosen letter  
 See the game instructions
