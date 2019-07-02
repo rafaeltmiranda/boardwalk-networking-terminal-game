@@ -6,7 +6,7 @@ In this game you are a pirate and you want to find the treasure's key. How can y
 It allows multiplayer via Netcat with players being able to create separate game rooms and password protect them, allowing multiple instances being run simultaneously.
 
 ## Deployment
-We've provided the build.xml file so you can buil the Jar with "ant" on terminal.
+We've provided the build.xml file so you can build the .Jar with "ant" on terminal.
 
 ## Usage
 Run the program and connect the clients via Netcat to the IP of the machine where the .Jar is being run on, port 2929: "nc x.x.x.x 2929".
@@ -14,9 +14,10 @@ Run the program and connect the clients via Netcat to the IP of the machine wher
 ## Features
 
 Players choose an alias  
-Create a room to play  
-Protect the room with password (optional)
-Join a room already created  
+Create a room to play or join the one already created  
+Protect the room with password (optional) 
+Chat in the room before game starts  
+Can't choose an already chosen letter  
 See the game instructions
 
 ## Screenshots
