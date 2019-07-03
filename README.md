@@ -1,7 +1,7 @@
 # Boardwalk
 This was developed as the second group project at Academia de Codigo's Bootcamp#29, at the end of the 7th week. We built it in three days.
 
-In this game you are a pirate and you want to find the treasure's key. How can you do that? Unravel the expression, letter by letter, or try to hit the entire expression. Every letter you miss, your ship sinks a bit.
+In this game you are a pirate and you want to find the treasure's key. How can you do that? Unravel the expression, letter by letter, or try to guess the entire expression. For every letter you miss, your ship sinks a bit.
 
 It allows multiplayer via Netcat with players being able to create separate game rooms and password protect them, allowing multiple instances being run simultaneously.
 
