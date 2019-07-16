@@ -187,7 +187,7 @@ class Room{
             return existLetter;
         }
 
-        for (int i = 0; i < completePhrase.length; i++) {
+        for (int i = 0; i < completePhrase.length && i < letters.length; i++) {
 
             if (completePhrase[i] == letters[i]) {
                 continue;
