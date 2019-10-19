@@ -17,6 +17,7 @@ Players choose an alias
 Create a room to play or join one already created  
 Protect the room with password (optional)  
 Chat in the room before game starts  
+To start the game and left the chat the room creater should send a message with "start"  
 Can't choose an already chosen letter  
 See the game instructions
 
