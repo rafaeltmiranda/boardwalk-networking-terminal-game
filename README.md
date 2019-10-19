@@ -19,7 +19,7 @@ Protect the room with password (optional)
 Chat in the room before game starts  
 To start the game and left the chat the room creater should send the message "start"  
 Can't choose an already chosen letter  
-See the game instructions
+For more, play the game and see the instructions
 
 ## Screenshots
 
