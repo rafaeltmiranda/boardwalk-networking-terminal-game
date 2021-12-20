@@ -18,7 +18,7 @@ public class Server {
 
         try {
             serverSocket = new ServerSocket(PORT);
-            System.out.println("Server running");
+            System.out.println("Server running on port " + PORT);
             waitForConnection();
         } catch (IOException e) {
             System.out.println("! New IO exception: " + e.getMessage());
@@ -30,6 +30,7 @@ public class Server {
         while(true) {
             Socket clientSocket = serverSocket.accept();
             threadPool.submit(new Lobby(clientSocket));
+            System.out.println("New player connected to the server " + clientSocket.getRemoteSocketAddress());
         }
 
     }

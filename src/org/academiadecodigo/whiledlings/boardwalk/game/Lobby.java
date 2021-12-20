@@ -24,7 +24,7 @@ public class Lobby implements Runnable{
     }
 
     private void joinRoom(Room room){
-        OutputBuilder.drawLogo(player.getSocket());
+        OutputBuilder.drawLogo(player);
         room.joinRoom(player);
 
         if (room.checkIfPlayerInRoom(player)) {
@@ -34,7 +34,7 @@ public class Lobby implements Runnable{
 
     private void roomListMenu() {
 
-        OutputBuilder.drawLogo(player.getSocket());
+        OutputBuilder.drawLogo(player);
 
         String[] options = getRoomsAsString();
 
@@ -98,33 +98,23 @@ public class Lobby implements Runnable{
 
         password = passwordProtect();
 
-        OutputBuilder.drawLogo(player.getSocket());
+        OutputBuilder.drawLogo(player);
 
         boolean differentName = false;
         String roomName = null;
-        PrintWriter writer = null;
-
-        try {
-             writer = new PrintWriter(player.getSocket().getOutputStream());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
         while (!differentName) {
             roomName = player.getPrompt().getUserInput(roomNameQuestion);
-
 
             if (validName(roomName)) {
                 differentName = true;
                 continue;
             }
 
-            writer.println("Room name already in use\n");
-            writer.flush();
-
+            player.sendContent("Room name already in use\n");
         }
 
-        OutputBuilder.drawLogo(player.getSocket());
+        OutputBuilder.drawLogo(player);
 
         Room room = new Room(roomName);
         rooms.add(room);
@@ -154,7 +144,7 @@ public class Lobby implements Runnable{
         PasswordInputScanner password2 = new PasswordInputScanner();
         password2.setMessage("Repeat password\n");
 
-        OutputBuilder.drawLogo(player.getSocket());
+        OutputBuilder.drawLogo(player);
 
         answer = player.getPrompt().getUserInput(passwordMenu);
 
@@ -210,11 +200,10 @@ public class Lobby implements Runnable{
         String[] options = {"Join a room.", "Create a room.", "Check instructions."};
         MenuInputScanner menuScanner = new MenuInputScanner(options);
         menuScanner.setMessage("Ahoy! Do you want to join a room or create a new room?");
-        PrintWriter printWriter = null;
 
         while (!player.inRoom) {
 
-            OutputBuilder.drawLogo(player.getSocket());
+            OutputBuilder.drawLogo(player);
 
             int answerIndex = player.getPrompt().getUserInput(menuScanner);
 
@@ -250,6 +239,8 @@ public class Lobby implements Runnable{
 
     private void instructions () {
 
+        OutputBuilder.drawLogo(player);
+
         String instructions = ColorTerminal.ANSI_YELLOW.getAnsi() + "Ahoy, Matey!\n" +
                 "Welcome to the Boardwalk game! To be successful, follow the instructions below.\n\n" +
                 ColorTerminal.ANSI_CYAN.getAnsi() +
@@ -268,13 +259,7 @@ public class Lobby implements Runnable{
         MenuInputScanner menuInstructions = new MenuInputScanner(menuInstructionsOptions);
         menuInstructions.setMessage(instructions);
 
-
-        OutputBuilder.drawLogo(player.getSocket());
-        int answerIndex = player.getPrompt().getUserInput(menuInstructions);
-
-        if (answerIndex == 1) {
-            menu();
-        }
+        player.getPrompt().getUserInput(menuInstructions);
     }
 
 

@@ -78,6 +78,15 @@ public class Player{
         }
     }
 
+    public void sendContent(String content) {
+        try {
+            PrintWriter writer = new PrintWriter(this.getSocket().getOutputStream());
+            writer.println(content);
+            writer.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     public int getLives() {
         return lives;

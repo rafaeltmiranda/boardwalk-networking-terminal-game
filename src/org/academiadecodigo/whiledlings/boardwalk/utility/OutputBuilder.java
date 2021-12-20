@@ -133,8 +133,8 @@ public class OutputBuilder {
         }
 
         String finalString = "";
-        for (int i = 0; i < finalArray.length; i++) {
-            finalString += finalArray[i] + "\n";
+        for (String s : finalArray) {
+            finalString += s + "\n";
         }
 
         PrintWriter printWriter;
@@ -151,24 +151,14 @@ public class OutputBuilder {
 
     }
 
-    public static void drawLogo(Socket playerSocket) {
-
-        PrintWriter printWriter;
-
-        try {
-            printWriter = new PrintWriter(playerSocket.getOutputStream());
-            printWriter.print(OutputBuilder.logo());
-            printWriter.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
+    public static void drawLogo(Player player) {
+        player.sendContent(logo());
     }
 
     public static void broadcastLogo(List<Player> players) {
 
         for (Player player : players) {
-            drawLogo(player.getSocket());
+            player.sendContent(logo());
         }
 
     }
@@ -178,10 +168,10 @@ public class OutputBuilder {
         return "\033[H\033[2J";
     }
 
-    public static String winner (Player player) {
+    public static String winner (Player player, String completeSentence) {
 
-        String winner = ColorTerminal.ANSI_GREEN.getAnsi() + "\nCONGRATULATIONS " + player.getAlias() +"!\n\n" +
-                "Sink me! Ye found the coffer's key!\n\n" + ColorTerminal.ANSI_YELLOW.getAnsi() +
+        return ColorTerminal.ANSI_GREEN.getAnsi() + "\nCONGRATULATIONS " + player.getAlias() +"!\n\n" +
+                "Sink me! Ye found the coffer's key! \"" + completeSentence + "\"\n\n" + ColorTerminal.ANSI_YELLOW.getAnsi() +
                 "*******************************************************************************\n" +
                 "          |                   |                  |                     |\n" +
                 " _________|________________.=\"\"_;=.______________|_____________________|_______\n" +
@@ -202,13 +192,12 @@ public class OutputBuilder {
                 "____/______/______/______/______/_____\"=.o|o_.--\"\"___/______/______/______/____\n" +
                 "/______/______/______/______/______/______/______/______/______/______/_______/\n" +
                 "*******************************************************************************" + ColorTerminal.ANSI_RESET.getAnsi();
-        return winner;
 
     }
 
-    public static String allLoosers() {
+    public static String allLoosers(String completePhrase) {
 
-        String loosers = "\n \n DEAD MEN TELL NO TALES!!! \n" +
+        return "\n \n DEAD MEN TELL NO TALES!!! The correct sentence is \"" + completePhrase + "\"\n" +
                 "Everybody lost the game. Better luck next time.\n \n" +
                 "  _______      ___      .___  ___.  _______      ______   ____    ____  _______ .______      \n" +
                 " /  _____|    /   \\     |   \\/   | |   ____|    /  __  \\  \\   \\  /   / |   ____||   _  \\     \n" +
@@ -216,7 +205,6 @@ public class OutputBuilder {
                 "|  | |_ |   /  /_\\  \\   |  |\\/|  | |   __|     |  |  |  |   \\      /   |   __|  |      /     \n" +
                 "|  |__| |  /  _____  \\  |  |  |  | |  |____    |  `--'  |    \\    /    |  |____ |  |\\  \\----.\n" +
                 " \\______| /__/     \\__\\ |__|  |__| |_______|    \\______/      \\__/     |_______|| _| `._____|";
-        return loosers;
     }
 
 }

@@ -1,6 +1,6 @@
 package org.academiadecodigo.whiledlings.boardwalk.phrases;
 
-public enum Phrases {
+public enum Sentences {
 
     ENCAPSULATION("ENCAPSULATION CAN BE USED TO HIDE DATA MEMBERS AND MEMBER FUNCTIONS"),
     INTERFACE("AN INTERFACE BASED PROGRAMMING IS ALWAYS A GOOD IDEA"),
@@ -30,15 +30,18 @@ public enum Phrases {
     ENUM("ENUM IS A CLASS TYPE THAT PRE DETERMINES THE POSSIBLE VALUES FOR A VARIABLE");
 
 
-    private String phrase;
+    private String sentence;
 
-    Phrases(String phrase){
-        this.phrase = phrase;
+    Sentences(String phrase){
+        this.sentence = phrase;
     }
 
+    public String getSentence() {
+        return sentence;
+    }
 
-    public char[] getPhraseAsCharArray(){
+    public char[] getSentenceAsCharArray(){
 
-        return phrase.toCharArray();
+        return sentence.toCharArray();
     }
 }

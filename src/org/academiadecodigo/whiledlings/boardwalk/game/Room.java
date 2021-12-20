@@ -2,28 +2,26 @@ package org.academiadecodigo.whiledlings.boardwalk.game;
 
 import org.academiadecodigo.bootcamp.scanners.string.PasswordInputScanner;
 import org.academiadecodigo.bootcamp.scanners.string.StringInputScanner;
-import org.academiadecodigo.whiledlings.boardwalk.phrases.Phrases;
+import org.academiadecodigo.whiledlings.boardwalk.phrases.Sentences;
 import org.academiadecodigo.whiledlings.boardwalk.utility.ColorTerminal;
 import org.academiadecodigo.whiledlings.boardwalk.utility.OutputBuilder;
 
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
-class Room{
+class Room {
 
-    private static final int MAX_PLAYERS = 5;
-
+    private static final int MAX_PLAYERS = 4;
+    boolean passwordProtected;
     private ArrayList<Player> players;
-    private char[] completePhrase;
-    private char[] playablePhrase;
+    private char[] completeSentence;
+    private String completeSentenceString;
+    private char[] playableSentence;
     private Set<Character> alreadyChosen;
     private String name;
     private Player roomOwner;
     private boolean closed;
-    boolean passwordProtected;
     private String password;
     private boolean endGame;
     private int playersInGame;
@@ -37,9 +35,10 @@ class Room{
     void joinRoom(Player player) {
 
         StringInputScanner notify = new StringInputScanner();
-        notify.setMessage("Sorry, the room " + name + " is closed :(\nEnter any key to back for menu:");
 
         if (closed) {
+            notify.setMessage("Sorry, the room " + name + " is closed " +
+                    ":(\nEnter any key to back for menu:");
             player.getPrompt().getUserInput(notify);
             return;
         }
@@ -79,11 +78,7 @@ class Room{
 
         password = player.getPrompt().getUserInput(passwordInputScanner);
 
-        if (password.equals(this.password)) {
-            return true;
-        }
-
-        return false;
+        return password.equals(this.password);
     }
 
 
@@ -116,7 +111,7 @@ class Room{
                 response = getResponse(player, "Your choice: ");
                 correctGuess = verifyResponse(response, player);
 
-                if (correctGuess){
+                if (correctGuess) {
                     i--;
                 }
 
@@ -130,7 +125,7 @@ class Room{
     }
 
     private void printWinner(Player player) {
-        broadcast(OutputBuilder.clearScreen() + OutputBuilder.winner(player));
+        broadcast(OutputBuilder.clearScreen() + OutputBuilder.winner(player, completeSentenceString));
 
         StringInputScanner exitScanner = new StringInputScanner();
         exitScanner.setMessage("\n Press any key to leave the game");
@@ -156,27 +151,26 @@ class Room{
                 }
 
                 letters = response.toCharArray();
-                continue;
 
             }
 
             alreadyChosen.add(response.charAt(0));
 
-            for (int i = 0; i < completePhrase.length; i++) {
+            for (int i = 0; i < completeSentence.length; i++) {
 
-                if (letters[0] == completePhrase[i]) {
-                    playablePhrase[i] = completePhrase[i];
+                if (letters[0] == completeSentence[i]) {
+                    playableSentence[i] = completeSentence[i];
                     existLetter = true;
                 }
             }
 
-            if (!existLetter){
+            if (!existLetter) {
                 player.subtractLife();
             }
 
-            for (int i = 0; i < completePhrase.length; i++) {
+            for (int i = 0; i < completeSentence.length; i++) {
 
-                if (completePhrase[i] == playablePhrase[i]) {
+                if (completeSentence[i] == playableSentence[i]) {
                     continue;
                 }
 
@@ -187,15 +181,15 @@ class Room{
             return existLetter;
         }
 
-        if (completePhrase.length != letters.length) {
+        if (completeSentence.length != letters.length) {
             player.subtractLife();
             player.subtractLife();
             return existLetter;
         }
 
-        for (int i = 0; i < completePhrase.length; i++) {
+        for (int i = 0; i < completeSentence.length; i++) {
 
-            if (completePhrase[i] == letters[i]) {
+            if (completeSentence[i] == letters[i]) {
                 continue;
             }
 
@@ -212,7 +206,7 @@ class Room{
     private void refreshScreen(Player player) {
 
         OutputBuilder.broadcastLogo(players);
-        String phrase = OutputBuilder.buildOutput(playablePhrase);
+        String phrase = OutputBuilder.buildOutput(playableSentence);
         broadcast(phrase);
         OutputBuilder.ship(players);
         broadcast("Wait " + player.getAlias() + " play.", player);
@@ -234,22 +228,28 @@ class Room{
 
     private String getPlayerList() {
 
-        String names = "Buccaneers in the room:\n";
+        StringBuilder names = new StringBuilder("Buccaneers in the room:\n");
 
         for (Player player : players) {
-            names = names + player.getAlias() + "\n";
+            names.append(player.getAlias()).append("\n");
         }
 
-        return names;
+        names.append("\n").append("While waiting you can chat with other players in the room. The game will " +
+                "automatically start when the player ").append(players.get(0).getAlias())
+                .append(" type \"start\" in the chat").append("\n");
+
+        return names.toString();
     }
 
     private void getRandomPhrase() {
 
-        completePhrase = Phrases.values()[(int) (Math.random() * Phrases.values().length)].getPhraseAsCharArray();
-        playablePhrase = new char[completePhrase.length];
+        Sentences sentence = Sentences.values()[(int) (Math.random() * Sentences.values().length)];
+        completeSentenceString = sentence.getSentence();
+        completeSentence = sentence.getSentenceAsCharArray();
+        playableSentence = new char[completeSentence.length];
 
-        for (int i = 0; i < completePhrase.length; i++) {
-            playablePhrase[i] = completePhrase[i] == ' ' ? ' ' : '_';
+        for (int i = 0; i < completeSentence.length; i++) {
+            playableSentence[i] = completeSentence[i] == ' ' ? ' ' : '_';
         }
     }
 
@@ -272,7 +272,6 @@ class Room{
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-
             }
         }
         start();
@@ -287,11 +286,7 @@ class Room{
         player.resetLives();
         player.inGame = true;
 
-        try {
-            player.getSocket().getOutputStream().write("Waiting for other players\n".getBytes());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        player.sendContent("Waiting for other players\n");
 
     }
 
@@ -305,15 +300,8 @@ class Room{
 
             checkOwner(message, fromPlayer);
 
-            try {
-                PrintWriter writer = new PrintWriter(player.getSocket().getOutputStream());
-                writer.println(ColorTerminal.ANSI_GREEN.getAnsi() + fromPlayer.getAlias() + " -> " +
-                        ColorTerminal.ANSI_RESET.getAnsi() + message);
-                writer.flush();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
+            player.sendContent(ColorTerminal.ANSI_GREEN.getAnsi() + fromPlayer.getAlias() + " -> " +
+                    ColorTerminal.ANSI_RESET.getAnsi() + message);
         }
     }
 
@@ -321,14 +309,7 @@ class Room{
 
         for (Player player : players) {
 
-            try {
-                PrintWriter writer = new PrintWriter(player.getSocket().getOutputStream());
-                writer.println(message);
-                writer.flush();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
+            player.sendContent(message);
         }
     }
 
@@ -340,7 +321,7 @@ class Room{
     private synchronized void checkOwner(String message, Player player) {
 
         if (player.equals(roomOwner)) {
-            if (message.equals("start")) {
+            if ("start".equals(message)) {
                 closed = true;
                 notifyAll();
             }
@@ -357,10 +338,7 @@ class Room{
 
     boolean checkIfPlayerInRoom(Player player) {
 
-        if (players.contains(player)) {
-            return true;
-        }
-        return false;
+        return players.contains(player);
     }
 
     int getNumberOfPlayers() {
@@ -368,13 +346,14 @@ class Room{
     }
 
     private void onLosers() {
-        broadcast(OutputBuilder.logo() + OutputBuilder.buildOutput(completePhrase) + OutputBuilder.allLoosers());
+        broadcast(OutputBuilder.logo() + OutputBuilder.buildOutput(completeSentence) +
+                OutputBuilder.allLoosers(completeSentenceString));
 
         StringInputScanner exitScanner = new StringInputScanner();
         exitScanner.setMessage("\n Press any key and \"Enter\" to leave the game");
 
-        for (int i = 0; i < players.size(); i++) {
-            players.get(i).getPrompt().getUserInput(exitScanner);
+        for (Player player : players) {
+            player.getPrompt().getUserInput(exitScanner);
         }
 
         sendPlayersToLobby();
@@ -385,7 +364,7 @@ class Room{
         for (Player player : players) {
 
             player.inRoom = false;
-            if (!player.equals(roomOwner)){
+            if (!player.equals(roomOwner)) {
                 Thread thread = new Thread(new Lobby(player.getSocket()));
                 thread.start();
             }
